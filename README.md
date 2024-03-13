@@ -11,14 +11,14 @@
 
 # Код программы
 
-[Backend]() <br />
-[Frontend]() <br />
-[Deploy]() <br />
+Backend <br />
+Frontend <br />
+Deploy <br />
 
 # Документация
 
 Курсовой проект <br />
 [Техническое задание](https://github.com/drklbri/CardTrader/blob/main/documentation/technical%20spec%20beta.docx)<br />
 Созданные диаграммы<br />
-Сопроводительное письмо]<br />
+Сопроводительное письмо<br />
 Аналитическая система в pdf-файле<br />
