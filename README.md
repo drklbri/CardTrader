@@ -20,5 +20,5 @@ Deploy <br />
 Курсовой проект <br />
 [Техническое задание](https://github.com/drklbri/CardTrader/blob/main/documentation/%D0%9A%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4%D0%B0%207%20%D0%A2%D0%97.docx)<br />
 Созданные диаграммы<br />
-Сопроводительное письмо<br />
+[Сопроводительное письмо](https://github.com/drklbri/CardTrader/blob/main/documentation/soprovoditelnoe_pismo7.docx) <br />
 Аналитическая система в pdf-файле<br />
