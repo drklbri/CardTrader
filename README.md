@@ -18,7 +18,7 @@
 # Документация
 
 Курсовой проект <br />
-[Техническое задание]([https://github.com/5david-hub5/TP-4.1-5/tree/main/Документация/Техническое%20задание](https://github.com/drklbri/CardTrader/blob/main/documentation/technical%20spec%20beta.docx))<br />
+[Техническое задание](https://github.com/drklbri/CardTrader/blob/main/documentation/technical%20spec%20beta.docx)<br />
 Созданные диаграммы<br />
 Сопроводительное письмо]<br />
 Аналитическая система в pdf-файле<br />
