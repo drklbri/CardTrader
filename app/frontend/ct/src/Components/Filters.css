@@ -1,0 +1,92 @@
+.filters-sidebar {
+    position: absolute;
+    top: 0;
+    left: -220px;
+    width: 300px;
+    height: 100%;
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    transition: left 0.3s ease;
+    z-index: 999;
+}
+.filters-sidebar.open {
+    left: 0;
+}
+
+.condition-options label {
+    display: block;
+    color: #fff;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.checkbox-custom {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #555;
+    border-radius: 3px;
+    position: relative;
+    margin-right: 10px;
+}
+
+.checkbox-custom::after {
+    content: '';
+    display: none;
+    width: 9px;
+    height: 5px;
+    border: 2px solid #fff;
+    border-top: none;
+    border-right: none;
+    transform: rotate(-45deg);
+    position: absolute;
+    top: 50%;
+    left: 4px;
+    transform: translateY(-50%);
+}
+
+input[type="checkbox"] {
+    display: none; /* Уберем стандартный чекбокс */
+}
+
+input[type="checkbox"]:checked + .checkbox-custom::after {
+    display: block;
+}
+
+.menu-icon {
+    width: 25px;
+    height: 3px;
+    background-color: #fff;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-left: -11px;
+    transition: transform 0.3s ease;
+}
+
+.filters-content {
+    margin-top: 40px;
+}
+
+.menu-toggle {
+    cursor: pointer;
+    position: absolute;
+    top: 63px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+}
+
+.menu-icon:nth-child(1) {
+    transform: translateY(-9px);
+}
+
+.menu-icon:nth-child(2) {
+    transform:  translateY(-9px);
+}
+
+.menu-icon:nth-child(3) {
+    transform:  translateY(-9px);
+}
+
+
