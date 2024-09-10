@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Activate your account</title>
+</head>
+<body>
+    <p>Здравствуйте, вы отправили запрос на создания аккаунта.</p>
+    <p>Пожалуйста, нажмите на ссылку ниже, чтобы подтвердить ваш аккаунт:</p>
+    <p>
+        <a href="http://{{ domain }}{% url 'activate' uidb64=uid token=token %}">
+            Активировать аккаунт
+        </a>
+    </p>
+</body>
+</html>
+</html>
