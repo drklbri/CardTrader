@@ -169,6 +169,8 @@ class CommentsDetailAPIView(generics.GenericAPIView,
 
 class CommentsUserAPIView(generics.GenericAPIView,
                           mixins.ListModelMixin, ):
+    serializer_class = CommentsSerializer
+
     def get_permissions(self):
         method = self.request.method
         if method == 'GET':
@@ -182,12 +184,14 @@ class CommentsUserAPIView(generics.GenericAPIView,
         operation_description="Get all comments for a user",
         responses={200: CommentsSerializer(many=True)}
     )
-    def get(self, request, pk):
-        return self.list(request, pk)
+    def get(self, request, user_id):
+        return self.list(request, user_id=user_id)
 
 
 class CommentsAnnouncementAPIView(generics.GenericAPIView,
                                   mixins.ListModelMixin, ):
+    serializer_class = CommentsSerializer
+
     def get_permissions(self):
         method = self.request.method
         if method == 'GET':
@@ -201,5 +205,5 @@ class CommentsAnnouncementAPIView(generics.GenericAPIView,
         operation_description="Get all comments for a announcement",
         responses={200: CommentsSerializer(many=True)}
     )
-    def get(self, request, pk):
-        return self.list(request, pk)
+    def get(self, request, announcement_id):
+        return self.list(request, announcement_id=announcement_id)
