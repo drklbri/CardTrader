@@ -33,33 +33,33 @@ services:
     networks:
       - my_network
 
-  web:
-    build: .
-    command: >
-      sh -c "echo SITE_DOMAIN is $SITE_DOMAIN &&
-             python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8000"
-    volumes:
-      - django_static_volume:/code/static
-      - django_media_volume:/code/media
-    ports:
-      - "8000:8000"
-    depends_on:
-      - postgres
-    environment:
-      - DATABASE_HOST=postgres
-      - DATABASE_PORT=5432
-      - DATABASE_NAME=CardTraderDB
-      - DATABASE_USER=AdminVV
-      - DATABASE_PASSWORD=VVPass1488228
-     # - SITE_DOMAIN=${SITE_DOMAIN}
-    extra_hosts:
-      - "host:host-gateway"
-    networks:
-      - my_network
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
+#  web:
+#    build: .
+#    command: >
+#      sh -c "echo SITE_DOMAIN is $SITE_DOMAIN &&
+#             python manage.py migrate &&
+#             python manage.py runserver 0.0.0.0:8000"
+#    volumes:
+#      - django_static_volume:/code/static
+#      - django_media_volume:/code/media
+#    ports:
+#      - "8000:8000"
+#    depends_on:
+#      - postgres
+#    environment:
+#      - DATABASE_HOST=postgres
+#      - DATABASE_PORT=5432
+#      - DATABASE_NAME=CardTraderDB
+#      - DATABASE_USER=AdminVV
+#      - DATABASE_PASSWORD=VVPass1488228
+#     # - SITE_DOMAIN=${SITE_DOMAIN}
+#    extra_hosts:
+#      - "host:host-gateway"
+#    networks:
+#      - my_network
+#    dns:
+#      - 8.8.8.8
+#      - 8.8.4.4
 
 volumes:
   postgres_data:
