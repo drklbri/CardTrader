@@ -8,12 +8,9 @@ from .serializers import AnnouncementSerializer, CommentsSerializer
 
 
 # Create your views here.
-# Получить лист всех объявлений
-# Создать новое объявление
 class AnnouncementAPIView(generics.GenericAPIView,
                           mixins.ListModelMixin,
-                          mixins.CreateModelMixin
-                          ):
+                          mixins.CreateModelMixin):
     queryset = Announcement.objects.all()
     serializer_class = AnnouncementSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -31,13 +28,11 @@ class AnnouncementAPIView(generics.GenericAPIView,
         responses={201: AnnouncementSerializer()}
     )
     def post(self, request):
+        serializer = self.get_serializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
         return self.create(request)
 
 
-# Получить лист объявлений по id пользователя
-# Получить объявление по id
-# Обновить объявление по id
-# Удалить объявление по id
 class AnnouncementDetailAPIView(generics.GenericAPIView,
                                 mixins.RetrieveModelMixin,
                                 mixins.UpdateModelMixin,
@@ -74,11 +69,11 @@ class AnnouncementDetailAPIView(generics.GenericAPIView,
     def delete(self, request, pk):
         return self.destroy(request, pk=pk)
 
-#todo "error_message": "AnnouncementUserAPIView.get() got an unexpected keyword argument 'user_id'"
+
+# todo "error_message": "AnnouncementUserAPIView.get() got an unexpected keyword argument 'user_id'"
 class AnnouncementUserAPIView(generics.GenericAPIView,
                               mixins.ListModelMixin,
                               ):
-    # queryset = Announcement.objects.all()
     serializer_class = AnnouncementSerializer
 
     def get_permissions(self):
@@ -94,16 +89,13 @@ class AnnouncementUserAPIView(generics.GenericAPIView,
         operation_description="Get all announcements for a user",
         responses={200: AnnouncementSerializer(many=True)}
     )
-    def get(self, request,user_id):
-        return self.list(request,user_id=user_id)
+    def get(self, request, user_id):
+        return self.list(request, user_id=user_id)
 
 
-# Получить лист всех комментариев
-# Создать новый комментарий
 class CommentsAPIView(generics.GenericAPIView,
                       mixins.ListModelMixin,
-                      mixins.CreateModelMixin
-                      ):
+                      mixins.CreateModelMixin):
     queryset = Comments.objects.all()
     serializer_class = CommentsSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -121,14 +113,18 @@ class CommentsAPIView(generics.GenericAPIView,
         responses={201: CommentsSerializer()}
     )
     def post(self, request):
+        """
+        Create a new comment. The user is automatically set to the currently authenticated user.
+        """
+        # Prepare data and set the user to the current authenticated user
+        data = request.data.copy()
+        data['user'] = request.user.id  # Set the user ID to the current user's ID
+
+        serializer = self.get_serializer(data=data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
         return self.create(request)
 
 
-# Получить лист комментариев по id пользователя
-# Получить лист комментариев по id объявления
-# Получить комментарий по id
-# Обновить комментарий по id
-# Удалить комментарий по id
 class CommentsDetailAPIView(generics.GenericAPIView,
                             mixins.ListModelMixin,
                             mixins.RetrieveModelMixin,
@@ -168,24 +164,24 @@ class CommentsDetailAPIView(generics.GenericAPIView,
 
 
 class CommentsUserAPIView(generics.GenericAPIView,
-                          mixins.ListModelMixin, ):
+                          mixins.ListModelMixin):
     serializer_class = CommentsSerializer
 
     def get_permissions(self):
-        method = self.request.method
-        if method == 'GET':
-            return [IsAuthenticated()]
+        return [IsAuthenticated()]
 
-    def get_queryset(self):
+    """"def get_queryset(self):
         user_id = self.kwargs.get('user_id')
-        return Comments.objects.filter(user_id=user_id)
+        if user_id:
+            return Comments.objects.filter(user_id=user_id)
+        return Comments.objects.filter(user=self.request.user)"""
 
     @swagger_auto_schema(
-        operation_description="Get all comments for a user",
+        operation_description="Get all comments for a user by user_id in URL or current user if user_id is not provided",
         responses={200: CommentsSerializer(many=True)}
     )
-    def get(self, request, user_id):
-        return self.list(request, user_id=user_id)
+    def get(self, request, user_id=None):
+        return self.list(request)
 
 
 class CommentsAnnouncementAPIView(generics.GenericAPIView,

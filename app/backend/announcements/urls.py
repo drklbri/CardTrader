@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import AnnouncementAPIView, AnnouncementDetailAPIView, AnnouncementUserAPIView, CommentsAPIView, \
-    CommentsDetailAPIView, CommentsUserAPIView, CommentsAnnouncementAPIView
+    CommentsDetailAPIView, CommentsUserAPIView, CommentsAnnouncementAPIView#, CommentsDetailSelfAPIView
 
 urlpatterns = [
     path('announcements', AnnouncementAPIView.as_view(), name='announcement'),
