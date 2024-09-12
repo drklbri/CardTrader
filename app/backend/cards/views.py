@@ -27,15 +27,9 @@ class CardAPIView(generics.GenericAPIView,
         responses={201: CardSerializer()}
     )
     def post(self, request):
-        """
-        Create a new card with announcement_id from the request body.
-        """
         serializer = self.get_serializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         return self.create(request)
-
-
-
 
 
 class CardDetailAPIView(generics.GenericAPIView,
@@ -125,6 +119,7 @@ class CardSearchAPIView(generics.GenericAPIView,
     def get(self, request):
         return self.list(request)
 
+
 class TagAPIView(generics.GenericAPIView,
                  mixins.ListModelMixin,
                  mixins.CreateModelMixin):
@@ -145,9 +140,6 @@ class TagAPIView(generics.GenericAPIView,
         responses={201: TagSerializer()}
     )
     def post(self, request):
-        """
-        Create a new tag.
-        """
         serializer = self.get_serializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         return self.create(request)
@@ -182,6 +174,7 @@ class TagDetailAPIView(generics.GenericAPIView,
     def delete(self, request, pk):
         return self.destroy(request, pk=pk)
 
+
 class CollectionAPIView(generics.GenericAPIView,
                         mixins.ListModelMixin,
                         mixins.CreateModelMixin):
@@ -202,9 +195,6 @@ class CollectionAPIView(generics.GenericAPIView,
         responses={201: CollectionSerializer()}
     )
     def post(self, request):
-        """
-        Create a new collection.
-        """
         serializer = self.get_serializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         return self.create(request)
