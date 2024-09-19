@@ -24,7 +24,7 @@ const Filters = ({ applyFilters }) => {
 
     return (
         <div className={`filters-sidebar ${isMenuOpen ? 'open' : ''}`}>
-            <div className="menu-toggle" onClick={toggleMenu}>
+            <div className="menu-toggleF" onClick={toggleMenu}>
                 <div className="menu-icon"></div>
                 <div className="menu-icon"></div>
                 <div className="menu-icon"></div>
@@ -32,6 +32,7 @@ const Filters = ({ applyFilters }) => {
             <div className="filters-content">
                 <div className="filter">
                     <input
+                        className="search-input"
                         type="text"
                         placeholder="Поиск"
                         value={searchText}
@@ -73,7 +74,7 @@ const Filters = ({ applyFilters }) => {
                     </div>
                 </div>
                 <div className="filter">
-                    <button onClick={handleApplyFilters}>Применить</button>
+                    <button className="apply-button">Применить</button>
                 </div>
             </div>
         </div>

@@ -1,7 +1,7 @@
 .filters-sidebar {
     position: absolute;
-    top: 0;
-    left: -220px;
+    top: 6%;
+    left: -230px;
     width: 300px;
     height: 100%;
     background-color: #333;
@@ -22,45 +22,42 @@
 }
 
 .checkbox-custom {
+    position: relative;
     display: inline-block;
     width: 20px;
     height: 20px;
-    background-color: #555;
-    border-radius: 3px;
-    position: relative;
-    margin-right: 10px;
+    background-color: #333; /* Цвет фона галочки */
+    border-radius: 5px;
+    border: 2px solid #fff; /* Цвет рамки галочки */
+    cursor: pointer;
 }
 
 .checkbox-custom::after {
-    content: '';
-    display: none;
-    width: 9px;
-    height: 5px;
-    border: 2px solid #fff;
-    border-top: none;
-    border-right: none;
-    transform: rotate(-45deg);
+    content: '\2713'; /* Значение символа галочки */
+    font-size: 16px;
+    color: #fff; /* Цвет галочки */
     position: absolute;
     top: 50%;
-    left: 4px;
-    transform: translateY(-50%);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0; /* Скрытый по умолчанию */
+}
+
+input[type="checkbox"]:checked + .checkbox-custom::after {
+    opacity: 1; /* Показываем галочку при выборе */
 }
 
 input[type="checkbox"] {
     display: none; /* Уберем стандартный чекбокс */
 }
 
-input[type="checkbox"]:checked + .checkbox-custom::after {
-    display: block;
-}
-
 .menu-icon {
     width: 25px;
-    height: 3px;
+    height: 4px;
     background-color: #fff;
     margin-bottom: 5px;
     margin-top: 5px;
-    margin-left: -11px;
+    margin-left: 8px;
     transition: transform 0.3s ease;
 }
 
@@ -68,25 +65,66 @@ input[type="checkbox"]:checked + .checkbox-custom::after {
     margin-top: 40px;
 }
 
-.menu-toggle {
+.menu-toggleF {
     cursor: pointer;
     position: absolute;
-    top: 63px;
+    top: 10px;
     right: 10px;
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 35px;
 }
 
-.menu-icon:nth-child(1) {
-    transform: translateY(-9px);
+.menu-toggleF::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    border-radius: 5px;
+    border: 2px solid rgba(255, 255, 255, 0.1); /* Цвет обводки меню */
 }
 
-.menu-icon:nth-child(2) {
-    transform:  translateY(-9px);
+.menu-toggleF::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    border-radius: 5px;
+    border: 2px solid transparent;
+    opacity: 0;
+    transition: opacity 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.menu-icon:nth-child(3) {
-    transform:  translateY(-9px);
+.menu-toggleF:hover::after {
+    opacity: 0.5;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #fff;
 }
 
+.apply-button {
+    cursor: pointer;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #333; /* Темный цвет фона */
+    color: #fff; /* Цвет текста */
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.apply-button:hover {
+    background-color: #555; /* Цвет фона при наведении */
+}
+
+.apply-button:focus {
+    outline: none;
+}
+
+.apply-button:active {
+    transform: scale(0.95); /* Уменьшение размера при нажатии */
+}
 
