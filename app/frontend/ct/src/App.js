@@ -1,19 +1,24 @@
-import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Button} from "react-bootstrap";
-import Navibar from "./Components/Navibar";
-import Filters from "./Components/Filters";
-
+import NavibarUnauth from "./Components/NavibarUnauth"
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import MainPage from "./Pages/MainPage";
 
 function App() {
-  return (
-      <div className="app-container">
-          <Navibar />
-          <Filters />{/* Рендерим компонент Navigation */}
-          {/* Дополнительный контент вашего приложения */}
-      </div>
-  );
+    return (
+        <div className="app-container">
+
+            <BrowserRouter>
+                <NavibarUnauth />
+                <Routes>
+                    <Route path="/main" element={<MainPage />} />
+                    {/* Дополнительные маршруты здесь */}
+                </Routes>
+            </BrowserRouter>
+        </div>
+
+
+    );
 }
 
 export default App;
