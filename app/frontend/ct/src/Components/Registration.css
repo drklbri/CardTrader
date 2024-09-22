@@ -1,0 +1,80 @@
+/* RegistrationForm.css */
+/* Устанавливаем фон для всей страницы */
+body {
+    background-color: #393838; /* Светло-серый фон */
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+.formReg {
+    width: 100%;
+    max-width: 400px;
+    background-color: #555;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.formAuth {
+    width: 100%;
+    max-width: 400px;
+    background-color: #555;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.title {
+    margin-bottom: 20px;
+    color: #ededed;
+    text-shadow:
+            1px 1px 0 #3c3c3c,   /* Тень справа снизу */
+            -1px 1px 0 #3c3c3c,  /* Тень слева снизу */
+            1px -1px 0 #3c3c3c,  /* Тень справа сверху */
+            -1px -1px 0 #3c3c3c; /* Тень слева сверху */
+}
+
+.input {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.button {
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.button:hover {
+    background-color: #555;
+}
+
+/* Стили для успешного сообщения */
+.success-message {
+    color: #48a848;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Стили для сообщения об ошибке */
+.error-message {
+    color: #ea2f2f;
+    font-weight: bold;
+    margin-top: 10px;
+}
