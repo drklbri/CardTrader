@@ -2,6 +2,7 @@ import React, {useContext, useState} from 'react';
 import './Registration.css'; // Импорт CSS файла
 import axios from 'axios'; // Импорт axios для отправки запросов
 import { AuthContext } from './AuthContext';
+import {useNavigate} from "react-router-dom";
 
 function AuthForm() {
     const [email, setEmail] = useState(''); // Состояние для email
@@ -9,6 +10,7 @@ function AuthForm() {
     const [errorMessage, setErrorMessage] = useState(''); // Состояние для ошибок
     const [successMessage, setSuccessMessage] = useState(''); // Состояние для успешных сообщений
     const { login } = useContext(AuthContext); // Получаем функцию login из контекста
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -33,6 +35,9 @@ function AuthForm() {
 
                 setSuccessMessage('Авторизация прошла успешно!');
                 setErrorMessage('');
+                setTimeout(() => {
+                    navigate('/cabinet');
+                }, 2000);
             } else {
                 setErrorMessage('Ошибка при авторизации. Попробуйте еще раз.');
                 setSuccessMessage('');

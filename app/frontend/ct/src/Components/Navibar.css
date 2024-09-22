@@ -8,6 +8,14 @@
     padding: 10px 20px;
 }
 
+.avatar {
+    width: 40px; /* Устанавливаем фиксированную ширину */
+    height: 40px; /* Устанавливаем фиксированную высоту */
+    border-radius: 50%; /* Скругляем края для круглой формы */
+    margin-right: 10px; /* Отступ справа от аватарки */
+    object-fit: cover; /* Сохраняем пропорции изображения */
+}
+
 .menu-toggle {
     cursor: pointer;
     padding: 10px 20px;
@@ -59,7 +67,6 @@
     width: calc(100% - 4px);
     padding: 8px;
     margin-bottom: 5px;
-    border: none;
     background: none;
     color: #fff;
     text-align: left;
