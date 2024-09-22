@@ -15,18 +15,31 @@ const Navibar = () => {
         try {
             const response = await axios.get('https://card-trader.online/profile/', {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem('access_token')}` // Авторизация через токен
-                }
+                    Authorization: `Bearer ${localStorage.getItem('access_token')}`, // Авторизация через токен
+                },
             });
-            setAvatarUrl(response.data.link); // Сохраняем URL аватара из ответа
+            // Устанавливаем URL аватара, если он существует
+            if (response.data && response.data.link) {
+                setAvatarUrl(response.data.link);
+            } else {
+                setAvatarUrl(''); // Устанавливаем пустую строку, если аватар отсутствует
+            }
         } catch (error) {
             console.error("Ошибка при получении аватара:", error);
+            setAvatarUrl(''); // Устанавливаем пустую строку при ошибке
         }
     };
 
     useEffect(() => {
         if (isAuthenticated) {
             fetchAvatar(); // Запрос аватара только если пользователь авторизован
+
+            // Устанавливаем интервал для периодической проверки
+            const intervalId = setInterval(() => {
+                fetchAvatar();
+            }, 1000); // Проверяем каждые 5 секунд
+
+            return () => clearInterval(intervalId); // Очищаем интервал при размонтировании
         }
     }, [isAuthenticated]);
 
@@ -55,9 +68,10 @@ const Navibar = () => {
             <input type="text" className="search-input" placeholder="Поиск..." />
             {isAuthenticated && avatarUrl && ( // Отображаем аватар только если пользователь авторизован и аватар получен
                 <img
-                    src={avatarUrl}
+                    src={avatarUrl || 'https://via.placeholder.com/120'} // Плейсхолдер, если URL пуст
                     className="avatar"
-                 />
+                    alt="User Avatar"
+                />
             )}
             <div className="menu-toggle" onClick={toggleMenu}>
                 Меню

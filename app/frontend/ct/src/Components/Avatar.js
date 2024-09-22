@@ -3,37 +3,41 @@ import './Avatar.css';
 import axios from "axios";
 
 const Avatar = ({ imageUrl, setImageUrl, averageRating, reviewCount }) => {
-    // Запрашиваем аватар при загрузке компонента
-    useEffect(() => {
-        const fetchAvatar = async () => {
-            try {
-                const response = await axios.get('https://card-trader.online/profile/', {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('access_token')}`, // Используем токен для авторизации
-                    },
-                });
+    const fetchAvatar = async () => {
+        try {
+            const response = await axios.get('https://card-trader.online/profile/', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+                },
+            });
 
-                // Выводим в консоль, чтобы увидеть, что возвращает сервер
-                console.log('Response data:', response.data);
+            console.log('Response data:', response.data);
 
-                // Предполагаем, что URL аватара находится в поле response.data.avatar (измените это в зависимости от фактического поля)
-                if (response.data && response.data.link) {
-                    setImageUrl(response.data.link); // Устанавливаем URL аватара
-                } else {
-                    console.error('Аватар не найден в ответе');
-                }
-            } catch (error) {
-                console.error('Ошибка при получении аватара:', error);
+            if (response.data && response.data.link) {
+                setImageUrl(response.data.link);
+            } else {
+                console.error('Аватар не найден в ответе');
+                setImageUrl(''); // Устанавливаем пустую строку, если аватар отсутствует
             }
-        };
+        } catch (error) {
+            console.error('Ошибка при получении аватара:', error);
+            setImageUrl(''); // Устанавливаем пустую строку при ошибке
+        }
+    };
 
-        fetchAvatar(); // Вызываем функцию для загрузки аватара
-    }, [setImageUrl]); // useEffect выполнится только при первом рендере
+    useEffect(() => {
+        fetchAvatar(); // Загружаем аватар при первом рендере
+
+        const intervalId = setInterval(() => {
+            fetchAvatar();
+        }, 1000); // Проверяем каждые 5 секунд
+
+        return () => clearInterval(intervalId);
+    }, [setImageUrl]);
 
     return (
         <div className="avatar-container">
             <div className="avatar-image-wrapper">
-                {/* Если imageUrl пуст, выводим плейсхолдер */}
                 <img
                     src={imageUrl || 'https://via.placeholder.com/120'}
                     alt="User Avatar"
