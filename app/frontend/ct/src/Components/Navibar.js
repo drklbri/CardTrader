@@ -57,7 +57,7 @@ const Navibar = () => {
                 <img
                     src={avatarUrl}
                     className="avatar"
-                 alt={}/>
+                 />
             )}
             <div className="menu-toggle" onClick={toggleMenu}>
                 Меню
