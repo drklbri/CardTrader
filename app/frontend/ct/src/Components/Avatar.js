@@ -1,53 +1,73 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import './Avatar.css';
 import axios from "axios";
 
-const Avatar = ({ imageUrl, setImageUrl, averageRating, reviewCount }) => {
-    const fetchAvatar = async () => {
+const Avatar = () => {
+    const [avatar_url, setImageUrl] = useState(''); // Состояние для URL аватара
+    const [reviewCount, setReviewCount] = useState(0); // Состояние для количества отзывов
+    const [username, setUsername] = useState(''); // Состояние для имени пользователя
+
+    // Функция для получения данных пользователя
+    const fetchUserData = async () => {
         try {
-            const response = await axios.get('https://card-trader.online/profile/', {
+            const response = await axios.get('https://card-trader.online/auth/user', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('access_token')}`,
                 },
             });
 
-            console.log('Response data:', response.data);
-
-            if (response.data && response.data.link) {
-                setImageUrl(response.data.link);
+            if (response.data && response.data.username) {
+                setUsername(response.data.username); // Устанавливаем имя пользователя
+                fetchUserDetails(response.data.username); // Запрашиваем детали пользователя по имени
             } else {
-                console.error('Аватар не найден в ответе');
-                setImageUrl(''); // Устанавливаем пустую строку, если аватар отсутствует
+                console.error('Данные пользователя не найдены');
             }
         } catch (error) {
-            console.error('Ошибка при получении аватара:', error);
+            console.error('Ошибка при получении данных пользователя:', error);
+        }
+    };
+
+    // Функция для получения аватара и количества отзывов
+    const fetchUserDetails = async (username) => {
+        try {
+            const response = await axios.get(`https://card-trader.online/auth/user/login/${username}`);
+
+            if (response.data) {
+                setImageUrl(response.data.avatar_url); // Устанавливаем URL аватара
+                setReviewCount(response.data.reviewCount || 0); // Устанавливаем количество отзывов
+            } else {
+                console.error('Данные пользователя не найдены по username:', username);
+                setImageUrl(''); // Если аватар отсутствует
+            }
+        } catch (error) {
+            console.error('Ошибка при получении деталей пользователя:', error);
             setImageUrl(''); // Устанавливаем пустую строку при ошибке
         }
     };
 
     useEffect(() => {
-        fetchAvatar(); // Загружаем аватар при первом рендере
+        fetchUserData(); // Загружаем данные пользователя при первом рендере
 
         const intervalId = setInterval(() => {
-            fetchAvatar();
-        }, 1000); // Проверяем каждые 5 секунд
+            fetchUserData(); // Проверяем каждые 100 секунд
+        }, 100000);
 
-        return () => clearInterval(intervalId);
-    }, [setImageUrl]);
+        return () => clearInterval(intervalId); // Очищаем интервал при размонтировании
+    }, []);
 
     return (
         <div className="avatar-container">
             <div className="avatar-image-wrapper">
                 <img
-                    src={imageUrl || 'https://via.placeholder.com/120'}
+                    src={avatar_url || 'https://via.placeholder.com/120'}
                     alt="User Avatar"
                     className="avatar-image"
                 />
             </div>
             <div className="avatar-info">
+                {username && <h3 className="avatar-username">{username}</h3>} {/* Имя пользователя */}
                 <div className="avatar-review-container">
                     <span className="avatar-reviews">{reviewCount} отзывов</span>
-                    <span className="avatar-rating">Рейтинг: {averageRating.toFixed(1)} / 10</span>
                 </div>
             </div>
         </div>

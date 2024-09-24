@@ -36,30 +36,6 @@ const Cabinet = () => {
 
     return (
         <div>
-            <form className="user-input-form">
-                <label>
-                    Average Rating:
-                    <input
-                        type="number"
-                        step="0.1"
-                        max="5"
-                        min="0"
-                        value={averageRating}
-                        onChange={handleRatingChange}
-                    />
-                </label>
-                <br />
-                <label>
-                    Review Count:
-                    <input
-                        type="number"
-                        min="0"
-                        value={reviewCount}
-                        onChange={handleReviewCountChange}
-                    />
-                </label>
-            </form>
-
             <Avatar
                 imageUrl={imageUrl}
                 setImageUrl={setImageUrl}

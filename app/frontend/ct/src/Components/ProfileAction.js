@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import './ProfileAction.css';
 
-const ProfileActions = ({ onChangeAvatar }) => {
+const ProfileActions = () => {
     // Обработчик загрузки файла
     const handleFileChange = async (event) => {
         const file = event.target.files[0]; // Получаем выбранный файл
@@ -22,7 +22,6 @@ const ProfileActions = ({ onChangeAvatar }) => {
 
             if (response.status === 200) {
                 console.log('Аватар успешно обновлён');
-                onChangeAvatar(); // Вызываем коллбэк для обновления аватара на странице
             } else {
                 console.error('Ошибка при обновлении аватара:', response);
             }
@@ -31,6 +30,7 @@ const ProfileActions = ({ onChangeAvatar }) => {
         }
     };
 
+    // Обработчик удаления аватара
     const handleDeleteAvatar = async () => {
         try {
             // Отправляем DELETE запрос на сервер для удаления аватара
@@ -40,9 +40,8 @@ const ProfileActions = ({ onChangeAvatar }) => {
                 },
             });
 
-            if (response.status === 200) {
+            if (response.status === 204) {
                 console.log('Аватар успешно удалён');
-                onChangeAvatar(); // Вызываем коллбэк для обновления аватара на странице
             } else {
                 console.error('Ошибка при удалении аватара:', response);
             }
@@ -53,26 +52,21 @@ const ProfileActions = ({ onChangeAvatar }) => {
 
     return (
         <div className="profile-actions-container">
-            <label htmlFor="avatar-upload" className="profile-button">
-                Change Avatar
-            </label>
+            {/* Элемент input для загрузки аватара */}
             <input
                 type="file"
                 id="avatar-upload"
-                style={{ display: 'none' }} // Прячем input, чтобы пользователь видел только кнопку
-                onChange={handleFileChange} // Обработчик выбора файла
+                style={{ display: 'none' }} // Скрываем input, чтобы он не отображался
+                onChange={handleFileChange}
             />
+            <label htmlFor="avatar-upload" className="profile-button">
+                Сменить аватар
+            </label>
             <button onClick={handleDeleteAvatar} className="profile-button">
-                Delete Avatar
+                Удалить аватар
             </button>
         </div>
     );
 };
 
 export default ProfileActions;
-{/* <button className="profile-button">
-                Change Password
-            </button>
-            <button className="profile-button">
-                Update Contact Info
-            </button>*/}
