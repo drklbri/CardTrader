@@ -9,7 +9,7 @@ const Navibar = () => {
     const [avatarUrl, setAvatarUrl] = useState(''); // Состояние для хранения URL аватара
     const [menuOpen, setMenuOpen] = useState(false);
     const navigate = useNavigate();
-    const { isAuthenticated, logout } = useContext(AuthContext); // Доступ к авторизации и функции logout
+    const { isAuthenticated, logout, currentUser } = useContext(AuthContext); // Доступ к авторизации и функции logout
 
     const fetchAvatar = async () => {
         try {
@@ -82,7 +82,7 @@ const Navibar = () => {
                     <button className="menu-item" onClick={() => handleNavigation('/main')}>Главная</button>
                     {isAuthenticated ? (
                         <>
-                            <button className="menu-item" onClick={() => handleNavigation('/cabinet')}>Личный кабинет</button>
+                            <button className="menu-item" onClick={() => handleNavigation(`/user/${currentUser.username}`)}>Личный кабинет</button>
                             <button className="menu-item" onClick={handleLogout}>Выйти</button>
                         </>
                     ) : (

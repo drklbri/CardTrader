@@ -3,6 +3,7 @@ import Filters from '../Components/Filters';
 import axios from 'axios';
 import Preview from '../Components/Preview';
 import "./MainPage.css";
+import { Link } from 'react-router-dom';
 
 const MainPage = () => {
     const [announcements, setAnnouncements] = useState([]);
@@ -40,9 +41,17 @@ const MainPage = () => {
                 {announcements.slice(0, visibleAnnouncements).map((announcement) => (
                     <Preview
                         key={announcement.id}
-                        name={announcement.name}
-                        user={announcement.user}
-                        images={announcement.images || ['https://via.placeholder.com/150']}
+                        name={
+                            <Link className="link">
+                                {announcement.name}
+                            </Link>
+                    }
+                        user={
+                            <Link to={`/user/${announcement.user_login}`} className="link">
+                                {announcement.user_login}
+                            </Link>
+                        }
+                        images={announcement.card_images || ['https://via.placeholder.com/150']}
                         tags={announcement.tags || ['No tags']}
                     />
                 ))}

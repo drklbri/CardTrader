@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Preview.css';
 
-const Preview = ({ name, user, images, tags }) => {
+const Preview = ({name, user, images, tags }) => {
     // Используем состояние для отслеживания текущей картинки
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 

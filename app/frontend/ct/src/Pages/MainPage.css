@@ -41,3 +41,16 @@
 .announcement-preview {
     transition: transform 0.3s ease; /* Плавный переход для перемещения элементов */
 }
+
+.link {
+    color: #ffffff; /* Белый цвет текста для темного фона */
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.link:hover {
+    color: #f39c12;
+    border-bottom: 2px solid #f39c12;
+}

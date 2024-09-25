@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import './Avatar.css';
 import axios from "axios";
 
-const Avatar = () => {
+const Avatar = ({login}) => {
     const [avatar_url, setImageUrl] = useState(''); // Состояние для URL аватара
     const [reviewCount, setReviewCount] = useState(0); // Состояние для количества отзывов
     const [username, setUsername] = useState(''); // Состояние для имени пользователя
@@ -17,8 +17,8 @@ const Avatar = () => {
             });
 
             if (response.data && response.data.username) {
-                setUsername(response.data.username); // Устанавливаем имя пользователя
-                fetchUserDetails(response.data.username); // Запрашиваем детали пользователя по имени
+                setUsername(login); // Устанавливаем имя пользователя
+                fetchUserDetails(login); // Запрашиваем детали пользователя по имени
             } else {
                 console.error('Данные пользователя не найдены');
             }

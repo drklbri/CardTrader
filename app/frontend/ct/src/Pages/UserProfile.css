@@ -1,0 +1,19 @@
+.error-container {
+    background-color: #2c2c2c; /* Темный фон */
+    color: #f5f5f5; /* Светлый текст */
+    padding: 20px; /* Отступы */
+    border-radius: 10px; /* Закругленные углы */
+    text-align: center; /* Центрирование текста */
+    margin: 20px; /* Отступ сверху и снизу */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Легкая тень */
+}
+
+.loading-container {
+    background-color: #2c2c2c; /* Темный фон */
+    color: #f5f5f5; /* Светлый текст */
+    padding: 20px; /* Отступы */
+    border-radius: 10px; /* Закругленные углы */
+    text-align: center; /* Центрирование текста */
+    margin: 20px; /* Отступ сверху и снизу */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Легкая тень */
+}

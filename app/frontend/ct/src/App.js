@@ -6,11 +6,14 @@ import Cabinet from "./Pages/Cabinet";
 import AuthPage from "./Pages/AuthPage";
 import RegistrationPage from "./Pages/RegistrationPage";
 import Navibar from "./Components/Navibar";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import UserProfile from "./Pages/UserProfile"
 import { AuthContext } from './Components/AuthContext';
+import axios from "axios";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('access_token'));
+    const [currentUser, setCurrentUser] = useState(null);
 
     const login = (accessToken, refreshToken) => {
         localStorage.setItem('access_token', accessToken);
@@ -24,16 +27,33 @@ function App() {
         setIsAuthenticated(false);
     };
 
+    useEffect(() => {
+        const fetchCurrentUser = async () => {
+            if (isAuthenticated) {
+                const accessToken = localStorage.getItem('access_token');
+                const response = await axios.get('https://card-trader.online/auth/user', {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+                setCurrentUser(response.data);
+            }
+        };
+
+        fetchCurrentUser();
+    }, [isAuthenticated]);
+
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, login, logout, currentUser }}>
             <div className="app-container">
                 <BrowserRouter>
-                    <Navibar /> {/* Заменяем Navibar на компонент Navigation */}
+                    <Navibar />
                     <Routes>
                         <Route path="/main" element={<MainPage />} />
                         <Route path="/cabinet" element={<Cabinet />} />
                         <Route path="/auth" element={<AuthPage />} />
                         <Route path="/register" element={<RegistrationPage />} />
+                        <Route path="/user/:login" element={<UserProfile/>} />
                         {/* Дополнительные маршруты */}
                     </Routes>
                 </BrowserRouter>
