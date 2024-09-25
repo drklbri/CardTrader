@@ -7,6 +7,8 @@ import './Cabinet.css'; // Импорт стилей
 
 const Cabinet = () => {
     const [imageUrl, setImageUrl] = useState('');
+    const [averageRating] = useState(0);
+    const [reviewCount] = useState(0);
     const [announcements, setAnnouncements] = useState([]); // Все объявления
     const [visibleAnnouncements, setVisibleAnnouncements] = useState([]); // Видимые объявления
     const [visibleCount, setVisibleCount] = useState(8); // Количество отображаемых объявлений
