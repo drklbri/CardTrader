@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import './ProfileAction.css';
 
 const ProfileActions = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false); // Состояние для отображения модального окна
+
     // Обработчик загрузки файла
     const handleFileChange = async (event) => {
         const file = event.target.files[0]; // Получаем выбранный файл
@@ -12,10 +14,9 @@ const ProfileActions = () => {
         formData.append('avatar', file); // Добавляем файл в форму данных
 
         try {
-            // Отправляем POST запрос на сервер для изменения аватара
             const response = await axios.post('https://card-trader.online/profile/', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data', // Обязательно указываем этот тип контента
+                    'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${localStorage.getItem('access_token')}`, // Токен для авторизации
                 },
             });
@@ -30,10 +31,19 @@ const ProfileActions = () => {
         }
     };
 
-    // Обработчик удаления аватара
+    // Открытие модального окна для подтверждения удаления аватара
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    // Закрытие модального окна
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    // Обработчик удаления аватара после подтверждения
     const handleDeleteAvatar = async () => {
         try {
-            // Отправляем DELETE запрос на сервер для удаления аватара
             const response = await axios.delete('https://card-trader.online/profile/', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('access_token')}`, // Токен для авторизации
@@ -42,6 +52,7 @@ const ProfileActions = () => {
 
             if (response.status === 204) {
                 console.log('Аватар успешно удалён');
+                closeModal(); // Закрываем модальное окно после удаления
             } else {
                 console.error('Ошибка при удалении аватара:', response);
             }
@@ -56,15 +67,33 @@ const ProfileActions = () => {
             <input
                 type="file"
                 id="avatar-upload"
-                style={{ display: 'none' }} // Скрываем input, чтобы он не отображался
+                style={{ display: 'none' }}
                 onChange={handleFileChange}
             />
             <label htmlFor="avatar-upload" className="profile-button">
                 Сменить аватар
             </label>
-            <button onClick={handleDeleteAvatar} className="profile-button">
+            <button onClick={openModal} className="profile-button">
                 Удалить аватар
             </button>
+
+            {/* Модальное окно для подтверждения удаления */}
+            {isModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <button className="close-button" onClick={closeModal}>
+                            &times; {/* Иконка крестика */}
+                        </button>
+                        <h2>Удалить аватар</h2>
+                        <p>Вы уверены, что хотите удалить аватар?</p>
+                        <div className="modal-actions">
+                            <button onClick={handleDeleteAvatar} className="confirm-button">
+                                Да, я уверен
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -50,9 +50,9 @@ const Avatar = () => {
 
         const intervalId = setInterval(() => {
             fetchUserData(); // Проверяем каждые 100 секунд
-        }, 100000);
+        }, 2000);
 
-        return () => clearInterval(intervalId); // Очищаем интервал при размонтировании
+        return () => clearInterval(intervalId);
     }, []);
 
     return (

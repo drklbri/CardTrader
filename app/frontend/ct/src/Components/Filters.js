@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Filters.css';
 
-const Filters = ({ applyFilters }) => {
+const Filters = ({ applyFilters, onToggle }) => {
     const [searchText, setSearchText] = useState('');
     const [selectedCondition, setSelectedCondition] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,6 +20,7 @@ const Filters = ({ applyFilters }) => {
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
+        onToggle(!isMenuOpen); // Передаем состояние открытого/закрытого фильтра в MainPage
     };
 
     return (
@@ -74,7 +75,9 @@ const Filters = ({ applyFilters }) => {
                     </div>
                 </div>
                 <div className="filter">
-                    <button className="apply-button">Применить</button>
+                    <button className="apply-button" onClick={handleApplyFilters}>
+                        Применить
+                    </button>
                 </div>
             </div>
         </div>
