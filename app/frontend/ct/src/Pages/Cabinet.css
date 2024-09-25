@@ -1,0 +1,44 @@
+.cabinet-container {
+    display: flex; /* Используем flex для создания двух колонок */
+    justify-content: space-between;
+    align-items: flex-start; /* Выравнивание по верхнему краю */
+    padding: 20px;
+    gap: 20px; /* Отступ между колонками */
+}
+
+/* Левая колонка: Аватар и действия профиля */
+.left-column {
+    flex: 1; /* Занимает пространство по необходимости */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Отступы между аватаром и кнопками */
+}
+
+/* Правая колонка: Объявления */
+.right-column {
+    flex: 3; /* Больше пространства для объявлений */
+}
+
+/* Контейнер для объявлений */
+.announcements-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 колонки */
+    grid-gap: 20px; /* Отступы между объявлениями */
+}
+
+/* Стили для кнопки "Показать больше" */
+.show-more-button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.show-more-button:hover {
+    background-color: #555;
+}

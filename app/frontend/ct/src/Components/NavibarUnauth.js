@@ -34,7 +34,6 @@ const Navigation = () => {
                     <button className="menu-item" onClick={() => handleNavigation('/main')}>Главная</button>
                     <button className="menu-item" onClick={() => handleNavigation('/register')}>Регистрация</button>
                     <button className="menu-item" onClick={() => handleNavigation('/auth')}>Войти</button>
-                    <button className="menu-item" onClick={() => handleNavigation('/cabinet')}>Личный кабинет</button>
                 </div>
             )}
         </div>

@@ -6,6 +6,15 @@
     background-color: #333;
     color: #fff;
     padding: 10px 20px;
+    z-index: 100; /* Добавляем высокий z-index для меню */
+}
+
+.avatar {
+    width: 40px; /* Устанавливаем фиксированную ширину */
+    height: 40px; /* Устанавливаем фиксированную высоту */
+    border-radius: 50%; /* Скругляем края для круглой формы */
+    margin-right: 10px; /* Отступ справа от аватарки */
+    object-fit: cover; /* Сохраняем пропорции изображения */
 }
 
 .menu-toggle {
@@ -59,7 +68,6 @@
     width: calc(100% - 4px);
     padding: 8px;
     margin-bottom: 5px;
-    border: none;
     background: none;
     color: #fff;
     text-align: left;
