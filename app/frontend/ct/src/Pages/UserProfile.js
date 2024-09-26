@@ -4,10 +4,10 @@ import Preview from '../Components/Preview';
 import ProfileActions from '../Components/ProfileAction'; // Импортируем ProfileActions
 import axios from 'axios';
 import './Cabinet.css';
-import {Link, useParams} from "react-router-dom";
-import { AuthContext } from '../Components/AuthContext';// Импортируем AuthContext
-import "./UserProfile.css"
-
+import { Link, useParams } from "react-router-dom";
+import { AuthContext } from '../Components/AuthContext'; // Импортируем AuthContext
+import "./UserProfile.css";
+import CommentsContainer from "../Components/CommentsContainer";
 
 const UserProfile = () => {
     const { isAuthenticated, currentUser } = useContext(AuthContext); // Получаем состояние аутентификации
@@ -16,58 +16,64 @@ const UserProfile = () => {
     const [announcements, setAnnouncements] = useState([]);
     const [visibleAnnouncements, setVisibleAnnouncements] = useState([]);
     const [visibleCount, setVisibleCount] = useState(8);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [comments, setComments] = useState([]);
 
     const { login } = useParams();
 
     useEffect(() => {
+        setUserData(null);
+        setImageUrl('');
+        setAnnouncements([]);
+        setVisibleAnnouncements([]);
+        setComments([]);
+        setError(null);
+    }, [login]);
+
+    useEffect(() => {
         const fetchUserData = async () => {
-            setLoading(true);
             try {
+                // Получаем данные пользователя
                 const response = await axios.get(`/auth/user/login/${login}/`);
+                console.log("User data response:", response.data); // Логирование ответа
+
                 if (response.data) {
                     setUserData(response.data);
                     setImageUrl(response.data.avatar || '');
 
+                    // Получаем объявления пользователя
                     const announcementsResponse = await axios.get(`https://card-trader.online/announcements/user/${login}`, {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem('access_token')}`,
                         },
                     });
+                    console.log("Announcements response:", announcementsResponse.data); // Логирование ответа
                     setAnnouncements(announcementsResponse.data);
                     setVisibleAnnouncements(announcementsResponse.data.slice(0, visibleCount));
-                } else if (response.data.detail === "No User matches the given query.") {
+
+                    const commentsResponse = await axios.get(`/comments/user/${login}/announcements/`);
+                    setComments(commentsResponse.data.slice(0, 3));
+                } else {
                     setError('Пользователь не найден.');
                 }
             } catch (err) {
+                console.error('Ошибка при загрузке данных пользователя:', err); // Логируем ошибку
                 if (err.response && err.response.status === 404) {
                     setError('Пользователь не найден.');
                 } else {
-                    console.error('Ошибка при загрузке данных пользователя:', err);
                     setError('Произошла ошибка при загрузке данных.');
                 }
-            } finally {
-                setLoading(false);
             }
         };
 
         fetchUserData();
-    }, [login, visibleCount]);
+    }, [login]);
 
     const handleShowMore = () => {
         const nextCount = visibleCount + 8;
         setVisibleCount(nextCount > announcements.length ? announcements.length : nextCount);
         setVisibleAnnouncements(announcements.slice(0, nextCount));
     };
-
-    if (loading) {
-        return (
-            <div className="loading-container">
-                <h2>Загрузка...</h2> {/* Отображение сообщения загрузки */}
-            </div>
-        );
-    }
 
     if (error) {
         return (
@@ -77,17 +83,27 @@ const UserProfile = () => {
         );
     }
 
+    // Отображение сообщения, если данные пользователя еще не загружены
+    if (!userData) {
+        return (
+            <div style={{ textAlign: 'center', marginTop: '20px' }} className="loading-container">
+                <h1>Данные пользователя загружаются...</h1>
+            </div>
+        );
+    }
+
+
     return (
         <div className="cabinet-container">
             <div className="left-column">
-                <Avatar login={login}
+                <Avatar
+                    login={login}
                     imageUrl={imageUrl}
                     averageRating={userData.averageRating || 0}
                     reviewCount={userData.reviewCount || 0}
                 />
-                {/* Если пользователь аутентифицирован, отображаем ProfileActions */}
-
                 {isAuthenticated && currentUser.username === login && <ProfileActions />}
+                <CommentsContainer comments={comments} />
             </div>
 
             <div className="right-column">
@@ -95,7 +111,11 @@ const UserProfile = () => {
                     {visibleAnnouncements.map((announcement) => (
                         <Preview
                             key={announcement.id}
-                            name={announcement.name}
+                            name={
+                                <Link to={`/announcement/${announcement.id}`} className="link">
+                                    {announcement.name}
+                                </Link>
+                            }
                             user={
                                 <Link to={`/user/${announcement.user_login}`} className="link">
                                     {announcement.user_login}

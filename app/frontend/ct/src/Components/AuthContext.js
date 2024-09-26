@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
     const login = (accessToken, refreshToken) => {
         localStorage.setItem('access_token', accessToken);
         localStorage.setItem('refresh_token', refreshToken);
+        localStorage.setItem('currentUser', currentUser)
         setIsAuthenticated(true);
         const decodedToken = jwtDecode(accessToken);
         setCurrentUser(decodedToken); // Сохраняем полный объект
