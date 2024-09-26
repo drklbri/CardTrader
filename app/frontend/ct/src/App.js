@@ -6,8 +6,9 @@ import Cabinet from "./Pages/Cabinet";
 import AuthPage from "./Pages/AuthPage";
 import RegistrationPage from "./Pages/RegistrationPage";
 import Navibar from "./Components/Navibar";
+import UserProfile from "./Pages/UserProfile";
+import AnnouncementPage from './Pages/AnnouncementPage'; // Импортируем компонент страницы объявления
 import {useEffect, useState} from "react";
-import UserProfile from "./Pages/UserProfile"
 import { AuthContext } from './Components/AuthContext';
 import axios from "axios";
 
@@ -54,7 +55,7 @@ function App() {
                         <Route path="/auth" element={<AuthPage />} />
                         <Route path="/register" element={<RegistrationPage />} />
                         <Route path="/user/:login" element={<UserProfile/>} />
-                        {/* Дополнительные маршруты */}
+                        <Route path="/announcement/:id" element={<AnnouncementPage/>} /> {/* Добавляем маршрут для страницы объявления */}
                     </Routes>
                 </BrowserRouter>
             </div>

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './Avatar.css';
 import axios from "axios";
+import {Link} from "react-router-dom";
 
 const Avatar = ({login}) => {
     const [avatar_url, setImageUrl] = useState(''); // Состояние для URL аватара
@@ -34,7 +35,7 @@ const Avatar = ({login}) => {
 
             if (response.data) {
                 setImageUrl(response.data.avatar_url); // Устанавливаем URL аватара
-                setReviewCount(response.data.reviewCount || 0); // Устанавливаем количество отзывов
+                setReviewCount(response.data.comment_count || 0); // Устанавливаем количество отзывов
             } else {
                 console.error('Данные пользователя не найдены по username:', username);
                 setImageUrl(''); // Если аватар отсутствует
@@ -65,9 +66,13 @@ const Avatar = ({login}) => {
                 />
             </div>
             <div className="avatar-info">
-                {username && <h3 className="avatar-username">{username}</h3>} {/* Имя пользователя */}
+                {username && (
+                    <Link to={`/user/${login}`} className="avatar-username" >
+                        {username}
+                    </Link>
+                )} {/* Имя пользователя как ссылка */}
                 <div className="avatar-review-container">
-                    <span className="avatar-reviews">{reviewCount} отзывов</span>
+                    <span className="avatar-reviews">Отзывов: {reviewCount}</span> {/* Количество отзывов без ссылки */}
                 </div>
             </div>
         </div>

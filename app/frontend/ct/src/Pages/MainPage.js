@@ -33,8 +33,7 @@ const MainPage = () => {
 
     return (
         <div>
-            <Filters applyFilters={() => {
-            }} onToggle={handleFilterToggle}/>
+            <Filters applyFilters={() => {}} onToggle={handleFilterToggle} />
 
             {/* Контейнер с объявлениями */}
             <div className={`announcements-grid ${isFilterOpen ? 'filter-open' : ''}`}>
@@ -42,10 +41,10 @@ const MainPage = () => {
                     <Preview
                         key={announcement.id}
                         name={
-                            <Link className="link">
+                            <Link to={`/announcement/${announcement.id}`} className="link">
                                 {announcement.name}
                             </Link>
-                    }
+                        }
                         user={
                             <Link to={`/user/${announcement.user_login}`} className="link">
                                 {announcement.user_login}
