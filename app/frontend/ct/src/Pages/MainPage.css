@@ -1,6 +1,6 @@
 .announcements-grid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr); /* Установите 7 колонок по умолчанию */
+    grid-template-columns: repeat(6, 1fr); /* Установите 7 колонок по умолчанию */
     gap: 15px; /* Расстояние между превью */
     margin-top: 20px;
     margin-left: 4%; /* Положение по умолчанию */
@@ -29,12 +29,12 @@
 }
 
 .filters-sidebar.open + .announcements-grid {
-    grid-template-columns: repeat(6, 1fr); /* Уменьшаем до 6 колонок при открытии шторки */
+    grid-template-columns: repeat(5, 1fr); /* Уменьшаем до 6 колонок при открытии шторки */
     margin-left: 16%; /* Увеличиваем отступ слева */
 }
 
 .filters-sidebar:not(.open) + .announcements-grid {
-    grid-template-columns: repeat(7, 1fr); /* Восстанавливаем 7 колонок при закрытии шторки */
+    grid-template-columns: repeat(6, 1fr); /* Восстанавливаем 7 колонок при закрытии шторки */
     margin-left: 4%; /* Восстанавливаем отступ при закрытии шторки */
 }
 

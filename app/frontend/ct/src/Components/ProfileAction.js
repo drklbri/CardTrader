@@ -14,6 +14,7 @@ const ProfileActions = () => {
         formData.append('avatar', file); // Добавляем файл в форму данных
 
         try {
+            console.log(formData)
             const response = await axios.post('https://card-trader.online/profile/', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',

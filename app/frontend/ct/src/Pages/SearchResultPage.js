@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import Filters from '../Components/Filters';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Preview from '../Components/Preview';
-import "./MainPage.css";
+import "./SearchResultPage.css";
 import { Link } from 'react-router-dom';
 
-const MainPage = () => {
+const SearchResultsPage = () => {
     const [announcements, setAnnouncements] = useState([]);
+    const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
     const [visibleAnnouncements, setVisibleAnnouncements] = useState(18);
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const location = useLocation();
+
+    const queryParams = new URLSearchParams(location.search);
+    const searchQuery = queryParams.get('q') || ''; // Извлекаем поисковый запрос из URL
 
     useEffect(() => {
         const fetchAnnouncements = async () => {
@@ -23,21 +27,27 @@ const MainPage = () => {
         fetchAnnouncements();
     }, []);
 
+    useEffect(() => {
+        const filtered = announcements.filter((announcement) =>
+            announcement.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            announcement.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (announcement.tags && announcement.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))
+        );
+        setFilteredAnnouncements(filtered);
+    }, [searchQuery, announcements]);
+
     const showMoreAnnouncements = () => {
         setVisibleAnnouncements((prev) => prev + 21);
     };
 
-    const handleFilterToggle = (isOpen) => {
-        setIsFilterOpen(isOpen);
-    };
-
     return (
         <div>
-            <Filters applyFilters={() => {}} onToggle={handleFilterToggle} />
+            <h1 className="search-result-query-title">
+                Результаты поиска для: "{searchQuery}"
+            </h1>
 
-            {/* Контейнер с объявлениями */}
-            <div className={`announcements-grid ${isFilterOpen ? 'filter-open' : ''}`}>
-                {announcements.slice(0, visibleAnnouncements).map((announcement) => (
+            <div className="announcements-grid">
+                {filteredAnnouncements.slice(0, visibleAnnouncements).map((announcement) => (
                     <Preview
                         key={announcement.id}
                         name={
@@ -56,7 +66,7 @@ const MainPage = () => {
                 ))}
             </div>
 
-            {visibleAnnouncements < announcements.length && (
+            {visibleAnnouncements < filteredAnnouncements.length && (
                 <button className="show-more-button" onClick={showMoreAnnouncements}>
                     Показать больше
                 </button>
@@ -65,4 +75,4 @@ const MainPage = () => {
     );
 };
 
-export default MainPage;
+export default SearchResultsPage;

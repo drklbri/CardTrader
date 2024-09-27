@@ -123,3 +123,18 @@
         margin-bottom: 10px;
     }
 }
+
+.create-announcement-button {
+    background-color: #555; /* Зеленый цвет */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-right: 10px; /* Отступ справа от кнопки, чтобы она была рядом с аватаром */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.create-announcement-button:hover {
+    background-color: #45a049; /* Более темный зеленый при наведении */
+}
