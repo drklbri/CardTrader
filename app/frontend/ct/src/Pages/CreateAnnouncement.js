@@ -151,10 +151,6 @@ const CreateAnnouncement = () => {
         try {
             const response = await fetch('/announcements/latest/?limit=1');
 
-            if (!response.ok) {
-                throw new Error('Ошибка при получении последнего объявления');
-            }
-
             const data = await response.json();
             console.log("Последнее объявление:", data);
             return data; // Возвращаем данные
