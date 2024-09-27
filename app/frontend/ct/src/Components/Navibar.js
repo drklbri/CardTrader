@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from './AuthContext';
 import axios from "axios";
 
-
 const Navibar = () => {
     const [avatarUrl, setAvatarUrl] = useState(''); // Состояние для хранения URL аватара
     const [menuOpen, setMenuOpen] = useState(false);
     const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState("");
     const { isAuthenticated, logout, currentUser } = useContext(AuthContext); // Доступ к авторизации и функции logout
 
     const fetchAvatar = async () => {
@@ -37,8 +37,7 @@ const Navibar = () => {
             // Устанавливаем интервал для периодической проверки
             const intervalId = setInterval(() => {
                 fetchAvatar();
-            }, 2000
-            ); // Проверяем каждые 5 секунд
+            }, 2000); // Проверяем каждые 2 секунды
 
             return () => clearInterval(intervalId); // Очищаем интервал при размонтировании
         }
@@ -64,9 +63,33 @@ const Navibar = () => {
         handleNavigation('/auth'); // Перенаправляем на страницу авторизации
     };
 
+    const handleSearch = (e) => {
+        if (e.key === 'Enter' || e.type === 'click') {
+            if (searchQuery.trim()) {
+                navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                setSearchQuery("");
+            }
+        }
+    };
+
     return (
         <div className="navigation-container">
-            <input type="text" className="search-input" placeholder="Поиск..." />
+            <input
+                type="text"
+                className="search-input"
+                placeholder="Поиск..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={handleSearch}
+            />
+
+            {/* Кнопка для создания объявления */}
+            {isAuthenticated && (
+                <button className="create-announcement-button" onClick={() => handleNavigation('/createAnnouncement')}>
+                    Создать объявление
+                </button>
+            )}
+
             {isAuthenticated && avatarUrl && ( // Отображаем аватар только если пользователь авторизован и аватар получен
                 <img
                     src={avatarUrl || 'https://via.placeholder.com/120'} // Плейсхолдер, если URL пуст
@@ -74,9 +97,11 @@ const Navibar = () => {
                     alt="User Avatar"
                 />
             )}
+
             <div className="menu-toggle" onClick={toggleMenu}>
                 Меню
             </div>
+
             {menuOpen && (
                 <div className="menu" onMouseLeave={closeMenu}>
                     <button className="menu-item" onClick={() => handleNavigation('/main')}>Главная</button>

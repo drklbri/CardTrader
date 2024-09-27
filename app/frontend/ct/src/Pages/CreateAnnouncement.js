@@ -8,7 +8,6 @@ const CreateAnnouncement = () => {
     const [selectedCondition, setSelectedCondition] = useState('minor_wear'); // Состояние
     const [selectedRarity, setSelectedRarity] = useState('common'); // Редкость
     const [selectedImage, setSelectedImage] = useState(null);
-    const [announcementId, setAnnouncementId] = useState(null); // Состояние для хранения ID объявления
 
     const handleAddCard = () => {
         setCards([...cards, { id: cards.length + 1, tags: [], images: [] }]);
@@ -86,10 +85,6 @@ const CreateAnnouncement = () => {
                 }),
             });
 
-            if (!response.ok) {
-                throw new Error('Ошибка при создании объявления');
-            }
-
             // Получаем последнее объявление
             const latestAnnouncementResponse = await fetchLatestAnnouncement();
             const announcementId = latestAnnouncementResponse[0].id;
@@ -99,6 +94,7 @@ const CreateAnnouncement = () => {
 
             // Отправляем запросы на создание карт для каждой вкладки
             for (const card of cards) {
+                console.log(card.tags)
                 const cardResponse = await fetch('/cards', {
                     method: 'POST',
                     headers: {
@@ -143,10 +139,6 @@ const CreateAnnouncement = () => {
                     },
                     body: formData,
                 });
-
-                if (!response.ok) {
-                    throw new Error(`Ошибка при загрузке изображения для карты ${cardId}`);
-                }
 
                 console.log(`Изображение успешно загружено для карты ${cardId}`);
             }

@@ -13,6 +13,7 @@ import { AuthContext } from './Components/AuthContext';
 import axios from "axios";
 import CreateAnnouncement from "./Pages/CreateAnnouncement";
 import DeletePage from "./Pages/DeletePage";
+import SearchResultPage from "./Pages/SearchResultPage"
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('access_token'));
@@ -60,6 +61,7 @@ function App() {
                         <Route path="/announcement/:id" element={<AnnouncementPage/>} /> {/* Добавляем маршрут для страницы объявления */}
                         <Route path="/createAnnouncement" element={<CreateAnnouncement/>} />
                         <Route path="/deletePage" element={<DeletePage/>} />
+                        <Route path="/search" element={<SearchResultPage />} />
                     </Routes>
                 </BrowserRouter>
             </div>

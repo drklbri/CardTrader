@@ -18,6 +18,7 @@ const UserProfile = () => {
     const [visibleCount, setVisibleCount] = useState(8);
     const [error, setError] = useState(null);
     const [comments, setComments] = useState([]);
+    const [confirmationModal, setConfirmationModal] = useState(null); // Для подтверждения удаления
 
     const { login } = useParams();
 
@@ -35,8 +36,6 @@ const UserProfile = () => {
             try {
                 // Получаем данные пользователя
                 const response = await axios.get(`/auth/user/login/${login}/`);
-                console.log("User data response:", response.data); // Логирование ответа
-
                 if (response.data) {
                     setUserData(response.data);
                     setImageUrl(response.data.avatar || '');
@@ -47,7 +46,6 @@ const UserProfile = () => {
                             Authorization: `Bearer ${localStorage.getItem('access_token')}`,
                         },
                     });
-                    console.log("Announcements response:", announcementsResponse.data); // Логирование ответа
                     setAnnouncements(announcementsResponse.data);
                     setVisibleAnnouncements(announcementsResponse.data.slice(0, visibleCount));
 
@@ -57,7 +55,6 @@ const UserProfile = () => {
                     setError('Пользователь не найден.');
                 }
             } catch (err) {
-                console.error('Ошибка при загрузке данных пользователя:', err); // Логируем ошибку
                 if (err.response && err.response.status === 404) {
                     setError('Пользователь не найден.');
                 } else {
@@ -75,6 +72,28 @@ const UserProfile = () => {
         setVisibleAnnouncements(announcements.slice(0, nextCount));
     };
 
+    // Функция для удаления объявления
+    const handleDeleteAnnouncement = async (announcementId) => {
+        try {
+            await axios.delete(`/announcements/${announcementId}/`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+                },
+            });
+            // Обновляем список объявлений после удаления
+            setAnnouncements(announcements.filter((announcement) => announcement.id !== announcementId));
+            setVisibleAnnouncements(visibleAnnouncements.filter((announcement) => announcement.id !== announcementId));
+            setConfirmationModal(null); // Закрываем модальное окно
+        } catch (err) {
+            console.error("Ошибка при удалении объявления:", err);
+        }
+    };
+
+    // Подтверждение удаления
+    const confirmDelete = (announcementId) => {
+        setConfirmationModal(announcementId);
+    };
+
     if (error) {
         return (
             <div style={{ textAlign: 'center', marginTop: '20px' }}>
@@ -83,7 +102,6 @@ const UserProfile = () => {
         );
     }
 
-    // Отображение сообщения, если данные пользователя еще не загружены
     if (!userData) {
         return (
             <div style={{ textAlign: 'center', marginTop: '20px' }} className="loading-container">
@@ -91,7 +109,6 @@ const UserProfile = () => {
             </div>
         );
     }
-
 
     return (
         <div className="cabinet-container">
@@ -109,21 +126,31 @@ const UserProfile = () => {
             <div className="right-column">
                 <div className="announcements-container">
                     {visibleAnnouncements.map((announcement) => (
-                        <Preview
-                            key={announcement.id}
-                            name={
-                                <Link to={`/announcement/${announcement.id}`} className="link">
-                                    {announcement.name}
-                                </Link>
-                            }
-                            user={
-                                <Link to={`/user/${announcement.user_login}`} className="link">
-                                    {announcement.user_login}
-                                </Link>
-                            }
-                            images={announcement.card_images || ['https://via.placeholder.com/150']}
-                            tags={announcement.tags || ['No tags']}
-                        />
+                        <div key={announcement.id} className="announcement-wrapper">
+                            <Preview
+                                key={announcement.id}
+                                name={
+                                    <Link to={`/announcement/${announcement.id}`} className="link">
+                                        {announcement.name}
+                                    </Link>
+                                }
+                                user={
+                                    <Link to={`/user/${announcement.user_login}`} className="link">
+                                        {announcement.user_login}
+                                    </Link>
+                                }
+                                images={announcement.card_images || ['https://via.placeholder.com/150']}
+                                tags={announcement.tags || ['No tags']}
+                            />
+                            {isAuthenticated && currentUser.username === login && (
+                                <button
+                                    className="remove-announcement-button"
+                                    onClick={() => confirmDelete(announcement.id)}
+                                >
+                                    ✖
+                                </button>
+                            )}
+                        </div>
                     ))}
                 </div>
 
@@ -133,6 +160,23 @@ const UserProfile = () => {
                     </button>
                 )}
             </div>
+
+            {/* Модальное окно подтверждения удаления */}
+            {confirmationModal && (
+                <div className="confirmation-modal">
+                    <div className="modal-content">
+                        <h3>Вы уверены, что хотите удалить это объявление?</h3>
+                        <div className="modal-actions">
+                            <button onClick={() => handleDeleteAnnouncement(confirmationModal)} className="confirm-button">
+                                Да, я уверен
+                            </button>
+                            <button onClick={() => setConfirmationModal(null)} className="cancel-button">
+                                Отмена
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
