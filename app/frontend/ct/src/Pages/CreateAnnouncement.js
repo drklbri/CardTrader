@@ -34,7 +34,6 @@ const CreateAnnouncement = () => {
         }
     };
 
-
     const handleImageRemove = (cardId, imageIndex) => {
         setCards(cards.map(card =>
             card.id === cardId
@@ -103,20 +102,21 @@ const CreateAnnouncement = () => {
                     },
                     body: JSON.stringify({
                         announcement: announcementId, // ID объявления
-                        condition: selectedCondition, // Состояние
-                        rarity: selectedRarity, // Редкость
-                        tags: card.tags // Теги из текущей карты
+                        condition: selectedCondition, // Используем состояние из вкладки объявления
+                        rarity: selectedRarity,
+                        tag_names: card.tags // Теги из текущей карты
                     }),
                 });
 
-            }
+                console.log(cardResponse)
 
-            const cardData = await fetchLatestAnnouncement()
-            cardIds.push(cardData[0].cards); // Сохраняем ID созданной карты
+                const cardData = await cardResponse.json(); // Получаем данные созданной карты
+                cardIds.push(cardData.id); // Сохраняем ID созданной карты
+            }
 
             // Загружаем изображения для карт после создания всех карт
             for (let i = 0; i < cards.length; i++) {
-                const cardId = cardIds[0][i]; // Получаем ID карты
+                const cardId = cardIds[i]; // Получаем ID карты
                 const images = cards[i].images; // Получаем изображения из текущей карты
                 await uploadCardImages(cardId, images); // Загружаем изображения для этой карты
             }
@@ -131,7 +131,6 @@ const CreateAnnouncement = () => {
             for (const image of images) {
                 const formData = new FormData();
                 formData.append('picture', image); // Append the file directly
-                console.log(formData)
                 const response = await fetch(`/cards/${cardId}/pictures/`, {
                     method: 'POST',
                     headers: {
@@ -146,7 +145,6 @@ const CreateAnnouncement = () => {
             console.error(`Ошибка при отправке изображений для карты ${cardId}:`, error);
         }
     };
-
 
     // Функция для получения последнего объявления
     const fetchLatestAnnouncement = async () => {
@@ -226,40 +224,6 @@ const CreateAnnouncement = () => {
                             </div>
                         </div>
 
-                        {/* Новые фильтры */}
-                        <div className="filters-section">
-                            <div className="filter">
-                                <label htmlFor="condition-select">Состояние:</label>
-                                <select
-                                    id="condition-select"
-                                    value={selectedCondition}
-                                    onChange={(e) => setSelectedCondition(e.target.value)}
-                                >
-                                    <option value="perfect">Идеальная</option>
-                                    <option value="pack_fresh">Только открытая</option>
-                                    <option value="minor_wear">Немного поигранная</option>
-                                    <option value="visible_wear">Умеренно поигранная</option>
-                                    <option value="severe_wear">Поигранная</option>
-                                    <option value="damaged">Сильно поигранная</option>
-                                    <option value="destroyed">Уничтоженная</option>
-                                </select>
-                            </div>
-                            <div className="filter">
-                                <label htmlFor="rarity-select">Редкость:</label>
-                                <select
-                                    id="rarity-select"
-                                    value={selectedRarity}
-                                    onChange={(e) => setSelectedRarity(e.target.value)}
-                                >
-                                    <option value="common">Обычная</option>
-                                    <option value="uncommon">Необычная</option>
-                                    <option value="rare">Редкая</option>
-                                    <option value="mythic">Мифическая</option>
-                                    <option value="epic">Эпическая</option>
-                                    <option value="legendary">Легендарная</option>
-                                </select>
-                            </div>
-                        </div>
                         <div className="tags-section" style={{ display: 'flex', flexDirection: 'column' }}>
                             <input
                                 type="text"
@@ -322,6 +286,41 @@ const CreateAnnouncement = () => {
                                 value={announcementData.contactInfo}
                                 onChange={handleAnnouncementChange}
                             />
+                        </div>
+
+                        {/* Новые фильтры перемещенные сюда */}
+                        <div className="filters-section">
+                            <div className="filter">
+                                <label htmlFor="condition-select">Состояние:</label>
+                                <select
+                                    id="condition-select"
+                                    value={selectedCondition}
+                                    onChange={(e) => setSelectedCondition(e.target.value)}
+                                >
+                                    <option value="perfect">Идеальная</option>
+                                    <option value="pack_fresh">Только открытая</option>
+                                    <option value="minor_wear">Немного поигранная</option>
+                                    <option value="visible_wear">Умеренно поигранная</option>
+                                    <option value="severe_wear">Поигранная</option>
+                                    <option value="damaged">Сильно поигранная</option>
+                                    <option value="destroyed">Уничтоженная</option>
+                                </select>
+                            </div>
+                            <div className="filter">
+                                <label htmlFor="rarity-select">Редкость:</label>
+                                <select
+                                    id="rarity-select"
+                                    value={selectedRarity}
+                                    onChange={(e) => setSelectedRarity(e.target.value)}
+                                >
+                                    <option value="common">Обычная</option>
+                                    <option value="uncommon">Необычная</option>
+                                    <option value="rare">Редкая</option>
+                                    <option value="mythic">Мифическая</option>
+                                    <option value="epic">Эпическая</option>
+                                    <option value="legendary">Легендарная</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 )}

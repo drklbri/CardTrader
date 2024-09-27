@@ -1,7 +1,7 @@
 .filters-sidebar {
     position: absolute;
     top: 6%;
-    left: -230px;
+    left: -13%;
     width: 300px;
     height: 100%;
     background-color: #333;
@@ -10,45 +10,49 @@
     transition: left 0.3s ease;
     z-index: 999;
 }
+
 .filters-sidebar.open {
     left: 0;
 }
 
-.condition-options label {
-    display: block;
-    color: #fff;
+filters-sidebar.closed {
+}
+
+.condition-title,
+.rarity-title {
+    font-weight: bold;
     margin-bottom: 10px;
-    position: relative;
+    font-size: 18px;
+    color: #fff;
 }
 
-.checkbox-custom {
-    position: relative;
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    background-color: #333; /* Цвет фона галочки */
+.condition-options,
+.rarity-options {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.condition-button,
+.rarity-button {
+    background-color: #444; /* Цвет фона кнопки */
+    color: #fff; /* Цвет текста */
+    border: none;
     border-radius: 5px;
-    border: 2px solid #fff; /* Цвет рамки галочки */
+    padding: 10px 15px;
+    margin: 5px;
     cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
-.checkbox-custom::after {
-    content: '\2713'; /* Значение символа галочки */
-    font-size: 16px;
-    color: #fff; /* Цвет галочки */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0; /* Скрытый по умолчанию */
+.condition-button:hover,
+.rarity-button:hover {
+    background-color: #555; /* Цвет фона при наведении */
 }
 
-input[type="checkbox"]:checked + .checkbox-custom::after {
-    opacity: 1; /* Показываем галочку при выборе */
-}
-
-input[type="checkbox"] {
-    display: none; /* Уберем стандартный чекбокс */
+.condition-button.active,
+.rarity-button.active {
+    background-color: #888; /* Цвет фона для выбранной кнопки */
+    transform: scale(1.05); /* Увеличение размера выбранной кнопки */
 }
 
 .menu-icon {
@@ -128,5 +132,68 @@ input[type="checkbox"] {
     transform: scale(0.95); /* Уменьшение размера при нажатии */
 }
 
+/* Новые стили для поиска тегов */
+.tags-suggestions {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+    border-radius: 5px;
+    max-height: 150px; /* Ограничение высоты списка */
+    overflow-y: auto;
+}
 
+
+.tag-item {
+    padding: 8px 10px;
+    margin: 8px;
+    color: #fff; /* Цвет текста для тегов */
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.tag-item:hover {
+    background-color: #555; /* Цвет фона при наведении на тег */
+}
+
+.tag-item.selected {
+    background-color: #888; /* Цвет фона для выбранного тега */
+    font-weight: bold; /* Увеличение веса шрифта для выделенного тега */
+}
+
+.search-input-filter {
+    margin-top: 5%;
+    margin-bottom: 5%;
+    flex-grow: 1;
+    max-width: 300px;
+    height: 40px;
+    padding: 6px;
+    border-radius: 5px;
+    border: 2px solid #555;
+    background-color: #444;
+    color: #fff;
+    margin-right: 9%;
+}
+
+.selected-tags {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.selected-tag {
+    background-color: #444;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.remove-tag {
+    background: none;
+    border: none;
+    color: #ffffff; /* Красный цвет для кнопки удаления */
+    margin-left: 5px;
+    cursor: pointer;
+}
 

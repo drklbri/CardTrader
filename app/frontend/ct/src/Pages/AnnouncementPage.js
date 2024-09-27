@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import {Link, useParams} from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Avatar from '../Components/Avatar'; // Import the Avatar component
 import './AnnouncementPage.css';
@@ -15,20 +15,22 @@ const AnnouncementPage = () => {
     const [user, setUser] = useState(null); // State for user
     const { currentUser } = useContext(AuthContext);
     const [avatars, setAvatars] = useState({}); // State for user avatars
+    const [cardDetails, setCardDetails] = useState(null); // State for card details
 
     useEffect(() => {
         const fetchUser = async () => {
             if (!currentUser) {
-            } else {
-                // If no user is found, try to fetch from server using currentUser.username
-                if (currentUser && currentUser.username) {
-                    try {
-                        const userResponse = await axios.get(`https://card-trader.online/auth/user/login/${currentUser.username}`);
-                        setUser(userResponse.data);
-                        localStorage.setItem('currentUser', JSON.stringify(userResponse.data)); // Save user to local storage
-                    } catch (error) {
-                        console.error('Error loading user data:', error);
-                    }
+                return; // If no currentUser, just return
+            }
+
+            // If no user is found, try to fetch from server using currentUser.username
+            if (currentUser && currentUser.username) {
+                try {
+                    const userResponse = await axios.get(`https://card-trader.online/auth/user/login/${currentUser.username}`);
+                    setUser(userResponse.data);
+                    localStorage.setItem('currentUser', JSON.stringify(userResponse.data)); // Save user to local storage
+                } catch (error) {
+                    console.error('Error loading user data:', error);
                 }
             }
         };
@@ -43,8 +45,13 @@ const AnnouncementPage = () => {
                 const response = await axios.get(`https://card-trader.online/announcements/${id}`);
                 setAnnouncement(response.data);
                 setSelectedImage(response.data.card_images[0]); // Set first image as selected
+
+                // Fetch card details using the first card ID
+                const cardId = response.data.cards[0]; // Берем первый ID карты из массива
+                const cardResponse = await axios.get(`https://card-trader.online/cards/${cardId}`);
+                setCardDetails(cardResponse.data); // Сохраняем детали карты
             } catch (error) {
-                console.error('Error loading announcement:', error);
+                console.error('Error loading announcement or card details:', error);
             }
         };
 
@@ -84,7 +91,7 @@ const AnnouncementPage = () => {
         fetchComments();
     }, [id]);
 
-    if (!announcement) {
+    if (!announcement || !cardDetails) {
         return <div>Loading...</div>; // Show loading indicator until data is fetched
     }
 
@@ -121,6 +128,10 @@ const AnnouncementPage = () => {
     };
 
     const handleShowContactInfo = () => {
+        if (!currentUser) {
+            alert('Пожалуйста, войдите в систему для доступа к контактной информации.');
+            return; // Показываем сообщение, если пользователь не авторизован
+        }
         setShowContactInfo(true); // Show contact info modal
     };
 
@@ -165,8 +176,8 @@ const AnnouncementPage = () => {
 
                     <div className="announcement-characteristics-container">
                         <p><strong>Характеристики:</strong></p>
-                        <p>Состояние: Ужасное</p>
-                        <p>Год выпуска: Анапа 2021</p>
+                        <p>Состояние: {cardDetails.condition}</p> {/* Используем данные карты */}
+                        <p>Редкость: {cardDetails.rarity}</p> {/* Используем данные карты */}
                     </div>
                 </div>
             </div>
@@ -196,19 +207,23 @@ const AnnouncementPage = () => {
                 <h2>Комментарии</h2>
 
                 {/* Comment input block */}
-                <div className="add-comment">
-                    <div className="user-avatar">
-                        <img src={user?.avatar_url || 'default-avatar-url'} alt="User Avatar" />
+                {currentUser ? ( // Показываем только если пользователь авторизован
+                    <div className="add-comment">
+                        <div className="user-avatar">
+                            <img src={user?.avatar_url || 'default-avatar-url'} alt="User Avatar" />
+                        </div>
+                        <div className="comment-input">
+                            <textarea
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                                placeholder="Оставьте комментарий..."
+                            />
+                            <button onClick={handleSubmitComment}>Отправить</button>
+                        </div>
                     </div>
-                    <div className="comment-input">
-                        <textarea
-                            value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                            placeholder="Leave a comment..."
-                        />
-                        <button onClick={handleSubmitComment}>Отправить</button>
-                    </div>
-                </div>
+                ) : (
+                    <p>Пожалуйста, войдите в систему, чтобы оставить комментарий.</p> // Сообщение для неавторизованных пользователей
+                )}
 
                 {/* List of comments */}
                 <div className="comments-list">
@@ -219,7 +234,7 @@ const AnnouncementPage = () => {
                             </div>
                             <div className="comment-content">
                                 <div className="comment-meta">
-                                    <Link to={`/user/${comment.name}`} className="comment-author" className="link">
+                                    <Link to={`/user/${comment.name}`} className="comment-author link">
                                         {comment.name}
                                     </Link>
                                     <span className="comment-date">{new Date(comment.creation_date).toLocaleDateString()}</span>
