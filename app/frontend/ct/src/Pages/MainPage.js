@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 const MainPage = () => {
     const [announcements, setAnnouncements] = useState([]);
-    const [visibleAnnouncements, setVisibleAnnouncements] = useState(21);
+    const [visibleAnnouncements, setVisibleAnnouncements] = useState(18);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     useEffect(() => {

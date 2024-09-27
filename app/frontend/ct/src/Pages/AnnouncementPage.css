@@ -52,16 +52,6 @@
     border: 2px solid #fff;
 }
 
-/* Средняя колонка с деталями объявления */
-.announcement-details {
-    width: 40%;
-    padding: 20px;
-    background-color: #222;
-    color: white;
-    border-radius: 12px;
-    box-shadow: 4px 8px rgba(0, 0, 0, 0.1);
-}
-
 .announcement-title {
     font-size: 1.5em;
     margin-bottom: 10px;
