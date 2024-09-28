@@ -19,6 +19,7 @@ const UserProfile = () => {
     const [error, setError] = useState(null);
     const [comments, setComments] = useState([]);
     const [confirmationModal, setConfirmationModal] = useState(null); // Для подтверждения удаления
+    const [blockError, setBlockError] = useState(null);
 
     const { login } = useParams();
 
@@ -29,6 +30,7 @@ const UserProfile = () => {
         setVisibleAnnouncements([]);
         setComments([]);
         setError(null);
+        setBlockError(null);
     }, [login]);
 
     useEffect(() => {
@@ -89,6 +91,44 @@ const UserProfile = () => {
         }
     };
 
+    const handleBlockUser = async () => {
+        try {
+            const response = await axios.put(`/auth/user/block/${login}/`, {
+                is_blocked: true
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+                },
+            });
+            // Обработка успешного ответа
+            if (response.status === 200) {
+                alert('Пользователь заблокирован успешно.');
+            }
+        } catch (err) {
+            setBlockError('Ошибка при блокировке пользователя.');
+            console.error("Ошибка при блокировке пользователя:", err);
+        }
+    };
+
+    const handleUnblockUser = async () => {
+        try {
+            const response = await axios.put(`/auth/user/block/${login}/`, {
+                is_blocked: false
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+                },
+            });
+            // Обработка успешного ответа
+            if (response.status === 200) {
+                alert('Пользователь разблокирован успешно.');
+            }
+        } catch (err) {
+            setBlockError('Ошибка при блокировке пользователя.');
+            console.error("Ошибка при блокировке пользователя:", err);
+        }
+    };
+
     // Подтверждение удаления
     const confirmDelete = (announcementId) => {
         setConfirmationModal(announcementId);
@@ -110,6 +150,9 @@ const UserProfile = () => {
         );
     }
 
+
+
+    console.log(currentUser)
     return (
         <div className="cabinet-container">
             <div className="left-column">
@@ -119,8 +162,19 @@ const UserProfile = () => {
                     averageRating={userData.averageRating || 0}
                     reviewCount={userData.reviewCount || 0}
                 />
+                {isAuthenticated && currentUser.role === "admin" && (
+                    <button className="block-button" onClick={handleBlockUser}>
+                        Забанить
+                    </button>
+                )}
+                {isAuthenticated && currentUser.role === "admin" && (
+                    <button className="block-button" onClick={handleUnblockUser}>
+                        Разбанить
+                    </button>
+                )}
                 {isAuthenticated && currentUser.username === login && <ProfileActions />}
                 <CommentsContainer comments={comments} />
+                {blockError && <div className="error-message">{blockError}</div>} {/* Отображение ошибок блокировки */}
             </div>
 
             <div className="right-column">

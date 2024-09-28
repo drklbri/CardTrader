@@ -84,3 +84,22 @@
     border-radius: 5px;
     cursor: pointer;
 }
+
+.block-button {
+    background-color: #2c2c2c; /* Тёмный фон */
+    color: #fff; /* Белый текст */
+    border: none; /* Убираем стандартные рамки */
+    border-radius: 5px; /* Скругленные углы */
+    padding: 10px 15px; /* Отступы внутри кнопки */
+    cursor: pointer; /* Указатель при наведении */
+    font-size: 16px; /* Размер шрифта */
+    transition: background-color 0.3s, transform 0.2s; /* Плавный переход */
+}
+
+.block-button:hover {
+    background-color: #444; /* Светлее при наведении */
+}
+
+.block-button:focus {
+    outline: none; /* Убираем обводку при фокусе */
+}
