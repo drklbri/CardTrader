@@ -106,7 +106,7 @@ const DeletePage = () => {
                     )}
                 </div>
             ) : (
-                <div className="no-access-message">fok u</div>
+                <div className="no-access-message">sorry no</div>
             )}
         </div>
     );
