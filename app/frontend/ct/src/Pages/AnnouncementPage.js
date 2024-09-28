@@ -16,6 +16,13 @@ const AnnouncementPage = () => {
     const { currentUser } = useContext(AuthContext);
     const [avatars, setAvatars] = useState({}); // State for user avatars
     const [cardDetails, setCardDetails] = useState(null); // State for card details
+    const [isEditing, setIsEditing] = useState(false); // State for editing mode
+    const [editedAnnouncement, setEditedAnnouncement] = useState({}); // State for edited fields
+    const [editedCardDetails, setEditedCardDetails] = useState({}); // State for edited card details
+    const [editedTags, setEditedTags] = useState([]); // State for edited tags
+    const [showConfirmation, setShowConfirmation] = useState(false);
+
+    const canEdit = currentUser && currentUser.username === announcement?.user_login;
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -143,6 +150,101 @@ const AnnouncementPage = () => {
         setSelectedImage(image);
     };
 
+    const handleEditClick = () => {
+        setEditedAnnouncement(announcement);
+        setEditedCardDetails(cardDetails);
+        if (editedTags.length === 0) {
+            for (let i = 0; i < cardDetails.tags.length; i++) {
+                console.log(cardDetails.tags[i].name)
+                handleTagAdd(cardDetails.tags[i].name);
+            }
+        } else {
+            setEditedTags([])
+        }
+        setIsEditing(!isEditing); // Toggle editing mode
+    };
+
+    const handleTagRemove = (index) => {
+        setEditedTags(editedTags.filter((_, i) => i !== index));
+    };
+
+    const handleTagAdd = (newTag) => {
+        if (newTag && newTag.trim() !== '') {
+            setEditedTags([...editedTags, newTag]);
+        }
+    }
+
+    const conditionMapping = {
+        "Идеальная": "perfect",
+        "Только открытая": "pack_fresh",
+        "Немного поигранная": "minor_wear",
+        "Умеренно поигранная": "visible_wear",
+        "Поигранная": "severe_wear",
+        "Сильно поигранная": "damaged",
+        "Уничтоженная": "destroyed",
+        "perfect": "perfect",
+        "pack_fresh": "pack_fresh",
+        "minor_wear": "minor_wear",
+        "visible_wear": "visible_wear",
+        "severe_wear": "severe_wear",
+        "damaged": "damaged",
+        "destroyed": "destroyed"
+    };
+
+    const rarityMapping = {
+        "Обычная": "common",
+        "Необычная": "uncommon",
+        "Редкая": "rare",
+        "Мифическая": "mythic",
+        "Эпическая": "epic",
+        "Легендарная": "legendary",
+        "common": "common",
+        "uncommon": "uncommon",
+        "rare": "rare",
+        "mythic": "mythic",
+        "epic": "epic",
+        "legendary": "legendary"
+    };
+
+    const handleSubmitChanges = async () => {
+        try {
+            // PUT request for the announcement
+            await axios.put(`https://card-trader.online/announcements/${id}/`, {
+                name: editedAnnouncement.name,
+                description: editedAnnouncement.description,
+                contact_info: editedAnnouncement.contact_info,
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                }
+            });
+
+            // PUT request for each card
+            for (const cardId of announcement.cards) {
+                await axios.put(`https://card-trader.online/cards/${cardId}/`, {
+                    announcement: announcement.id,
+                    condition: conditionMapping[editedCardDetails.condition],
+                    rarity: rarityMapping[editedCardDetails.rarity],
+                    tag_names: editedTags,
+                },{
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                    }
+                });
+            }
+
+            alert('Объявление успешно обновлено!');
+            setShowConfirmation(false); // Reset confirmation state
+            setIsEditing(false); // Exit editing mode
+            window.location.reload();
+        } catch (error) {
+            console.error('Error updating announcement or card:', error);
+            alert('Ошибка при обновлении объявления. Попробуйте снова.');
+        }
+    };
+
+
+
     return (
         <div className="announcement-page-container">
             <div className="image-gallery">
@@ -165,29 +267,146 @@ const AnnouncementPage = () => {
 
             <div className="announcement-details">
                 <div className="announcement-info-container">
-                    <h1 className="announcement-title">{announcement.name}</h1>
-                    <div className="announcement-description">
-                        <p><strong>Описание:</strong> {announcement.description}</p>
-                    </div>
+                    {isEditing ? (
+                        <>
+                            <label>
+                                Название:
+                                <input
+                                    type="text"
+                                    value={editedAnnouncement.name}
+                                    onChange={(e) => setEditedAnnouncement({
+                                        ...editedAnnouncement,
+                                        name: e.target.value
+                                    })}
+                                />
+                            </label>
+                            <label>
+                                Описание:
+                                <textarea
+                                    value={editedAnnouncement.description}
+                                    onChange={(e) => setEditedAnnouncement({
+                                        ...editedAnnouncement,
+                                        description: e.target.value
+                                    })}
+                                />
+                            </label>
+                            <label>
+                                Контакты:
+                                <input
+                                    type="text"
+                                    value={editedAnnouncement.contact_info}
+                                    onChange={(e) => setEditedAnnouncement({
+                                        ...editedAnnouncement,
+                                        contact_info: e.target.value
+                                    })}
+                                />
+                            </label>
+                        </>
+                    ) : (
+                        <>
+                            <h1 className="announcement-title">{announcement.name}</h1>
+                            <p><strong>Описание:</strong> {announcement.description}</p>
+                            {/* Скрываем блок контактов, если не в режиме редактирования */}
+                        </>
+                    )}
+
 
                     <div className="announcement-tags-container">
-                        <p><strong>Тэги:</strong> {announcement.tags.join(', ')}</p>
+                        <p><strong>Тэги: </strong>{announcement.tags.join(', ')}</p>
+                        <div className="tags-container" style={{display: 'flex', flexWrap: 'wrap', gap: '10px'}}>
+                            {editedTags.map((tag, index) => (
+                                <div key={index} className="selected-tag">
+                                    {tag}
+                                    {isEditing && (
+                                        <button className="remove-tag" onClick={() => handleTagRemove(index)}>✖</button>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                        {isEditing && (
+                            <button className="add-tag-button"
+                                    onClick={() => handleTagAdd(prompt('Введите новый тег:'))}>
+                                Добавить тег
+                            </button>
+                        )}
                     </div>
+
 
                     <div className="announcement-characteristics-container">
                         <p><strong>Характеристики:</strong></p>
-                        <p>Состояние: {cardDetails.condition}</p> {/* Используем данные карты */}
-                        <p>Редкость: {cardDetails.rarity}</p> {/* Используем данные карты */}
+                        {isEditing ? (
+                            <>
+                                <div className="filters-section">
+                                    <label>Состояние:</label>
+                                    <select
+                                        value={editedCardDetails.condition}
+                                        onChange={(e) => setEditedCardDetails({
+                                            ...editedCardDetails,
+                                            condition: e.target.value
+                                        })}
+                                    >
+                                        <option value="perfect">Идеальная</option>
+                                        <option value="pack_fresh">Только открытая</option>
+                                        <option value="minor_wear">Немного поигранная</option>
+                                        <option value="visible_wear">Умеренно поигранная</option>
+                                        <option value="severe_wear">Поигранная</option>
+                                        <option value="damaged">Сильно поигранная</option>
+                                        <option value="destroyed">Уничтоженная</option>
+                                    </select>
+
+                                    <label>Редкость:</label>
+                                    <select
+                                        value={editedCardDetails.rarity}
+                                        onChange={(e) => setEditedCardDetails({
+                                            ...editedCardDetails,
+                                            rarity: e.target.value
+                                        })}
+                                    >
+                                        <option value="common">Обычная</option>
+                                        <option value="uncommon">Необычная</option>
+                                        <option value="rare">Редкая</option>
+                                        <option value="mythic">Мифическая</option>
+                                        <option value="epic">Эпическая</option>
+                                        <option value="legendary">Легендарная</option>
+                                    </select>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <p>Состояние: {cardDetails.condition}</p>
+                                <p>Редкость: {cardDetails.rarity}</p>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
 
+
             {/* Right column with avatar and button */}
             <div className="announcement-sidebar">
-                <Avatar login={announcement.user_login} />
+                <Avatar login={announcement.user_login}/>
                 <button className="contact-button" onClick={handleShowContactInfo}>
                     Узнать контактные данные
                 </button>
+                {canEdit && (
+                    <div className="edit-controls">
+                        <button onClick={handleEditClick}>
+                            {isEditing ? 'Отменить' : 'Редактировать объявление'}
+                        </button>
+                        {isEditing && (
+                            <>
+                                <button onClick={() => setShowConfirmation(true)}>Закончить редактирование</button>
+                                {showConfirmation && (
+                                    <div className="confirmation-modal">
+                                        <p>Вы уверены, что хотите сохранить изменения?</p>
+                                        <button onClick={handleSubmitChanges}>Да</button>
+                                        <button onClick={() => setShowConfirmation(false)}>Нет</button>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                )}
             </div>
 
             {/* Modal for contact information */}
@@ -210,7 +429,7 @@ const AnnouncementPage = () => {
                 {currentUser ? ( // Показываем только если пользователь авторизован
                     <div className="add-comment">
                         <div className="user-avatar">
-                            <img src={user?.avatar_url || 'default-avatar-url'} alt="User Avatar" />
+                            <img src={user?.avatar_url || 'default-avatar-url'} alt="User Avatar"/>
                         </div>
                         <div className="comment-input">
                             <textarea
@@ -230,7 +449,7 @@ const AnnouncementPage = () => {
                     {comments.map((comment, index) => (
                         <div key={index} className="comment">
                             <div className="comment-avatar">
-                                <img src={avatars[comment.name] || 'default-avatar-url'} alt="Avatar" />
+                                <img src={avatars[comment.name] || 'default-avatar-url'} alt="Avatar"/>
                             </div>
                             <div className="comment-content">
                                 <div className="comment-meta">

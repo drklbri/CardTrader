@@ -53,7 +53,7 @@ function App() {
                 <BrowserRouter>
                     <Navibar />
                     <Routes>
-                        <Route path="/main" element={<MainPage />} />
+                        <Route path="/" element={<MainPage />} />
                         <Route path="/cabinet" element={<Cabinet />} />
                         <Route path="/auth" element={<AuthPage />} />
                         <Route path="/register" element={<RegistrationPage />} />

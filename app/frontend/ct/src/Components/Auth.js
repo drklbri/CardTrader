@@ -36,7 +36,7 @@ function AuthForm() {
                 setSuccessMessage('Авторизация прошла успешно!');
                 setErrorMessage('');
                 setTimeout(() => {
-                    navigate('/main');
+                    navigate('/');
                 }, 2000);
             } else {
                 setErrorMessage('Ошибка при авторизации. Попробуйте еще раз.');

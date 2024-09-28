@@ -31,7 +31,7 @@ const Navigation = () => {
             </div>
             {menuOpen && (
                 <div className="menu" onMouseLeave={closeMenu}>
-                    <button className="menu-item" onClick={() => handleNavigation('/main')}>Главная</button>
+                    <button className="menu-item" onClick={() => handleNavigation('/')}>Главная</button>
                     <button className="menu-item" onClick={() => handleNavigation('/register')}>Регистрация</button>
                     <button className="menu-item" onClick={() => handleNavigation('/auth')}>Войти</button>
                 </div>

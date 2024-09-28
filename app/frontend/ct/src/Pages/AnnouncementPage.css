@@ -259,3 +259,235 @@ p {
     color: #f39c12;
     border-bottom: 2px solid #f39c12;
 }
+
+
+/* Кнопка "Редактировать объявление" и "Закончить редактирование" */
+.edit-controls {
+    display: flex;
+    gap: 15px; /* Отступы между кнопками */
+    margin-top: 20px;
+}
+
+.edit-controls button {
+    padding: 10px 20px;
+    background-color: #000; /* Оранжевый цвет */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-controls button:hover {
+    background-color: #333; /* Более темный оттенок оранжевого при наведении */
+}
+
+/* Редактируемые поля (input, textarea) */
+label {
+    display: block; /* Каждый label занимает отдельную строку */
+    margin-bottom: 5px; /* Отступ между меткой и полем ввода */
+    background-color: #222;
+    border-radius: 5px;
+    padding: 1%;
+}
+
+input, textarea {
+    width: 1%; /* Поля ввода занимают всю ширину */
+    padding: 10px; /* Отступы внутри полей */
+    background-color: #222; /* Более тёмный фон для полей ввода */
+    color: #f1f1f1; /* Цвет текста в полях */
+}
+
+
+textarea {
+    resize: vertical; /* Запрещаем изменение размера текстового поля */
+}
+
+/* Контейнер подтверждения изменений */
+.confirmation-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #222; /* Темный фон */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    z-index: 1000; /* Выводим модальное окно поверх всего */
+}
+
+.confirmation-modal p {
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: white;
+}
+
+.confirmation-modal button {
+    padding: 10px 20px;
+    background-color: #f39c12;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
+}
+
+.confirmation-modal button:hover {
+    background-color: #e67e22;
+}
+
+/* Управление тегами */
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.selected-tag {
+    display: flex;
+    align-items: center;
+    background-color: #444; /* Цвет фона для тегов */
+    color: #fff; /* Цвет текста */
+    padding: 5px 10px; /* Внутренние отступы для тегов */
+    border-radius: 5px; /* Округлые углы для тегов */
+    margin-right: 5px; /* Отступ справа для тегов */
+    margin-bottom: 5px; /* Отступ снизу для тегов */
+    transition: background-color 0.3s; /* Плавный переход для фона */
+}
+
+.selected-tag:hover {
+    background-color: #555; /* Цвет фона при наведении на тег */
+}
+
+.remove-tag {
+    background: none;
+    border: none;
+    color: #ff4757; /* Красный цвет для кнопки удаления */
+    margin-left: 8px; /* Отступ слева для кнопки удаления */
+    cursor: pointer;
+    transition: color 0.3s; /* Плавный переход для цвета кнопки */
+}
+
+.remove-tag:hover {
+    color: #ff6b81; /* Более светлый оттенок при наведении */
+}
+
+.add-tag-button {
+    background-color: #333; /* Цвет фона кнопки добавления тега */
+    color: #fff; /* Цвет текста */
+    border: none; /* Без рамки */
+    border-radius: 5px; /* Округлые углы */
+    padding: 10px 15px; /* Внутренние отступы */
+    cursor: pointer; /* Курсор при наведении */
+    margin-top: 10px; /* Отступ сверху для кнопки добавления */
+    transition: background-color 0.3s; /* Плавный переход для фона */
+}
+
+.add-tag-button:hover {
+    background-color: #555; /* Цвет фона при наведении на кнопку добавления */
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Полупрозрачный фон */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #444; /* Цвет фона модального окна */
+    color: #fff; /* Цвет текста */
+    padding: 20px;
+    border-radius: 10px; /* Округлые углы */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.modal h2 {
+    margin-bottom: 15px; /* Отступ снизу заголовка */
+}
+
+.modal input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px; /* Отступ снизу для поля ввода */
+    border-radius: 5px; /* Округлые углы для поля ввода */
+    border: 1px solid #555; /* Цвет рамки */
+    background-color: #333; /* Цвет фона поля ввода */
+    color: #fff; /* Цвет текста */
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between; /* Равное расстояние между кнопками */
+}
+
+.modal-buttons button {
+    background-color: #555; /* Цвет фона для кнопок */
+    color: #fff; /* Цвет текста */
+    border: none;
+    border-radius: 5px; /* Округлые углы для кнопок */
+    padding: 10px 15px; /* Внутренние отступы */
+    cursor: pointer; /* Курсор при наведении */
+    transition: background-color 0.3s; /* Плавный переход для фона */
+}
+
+.modal-buttons button:hover {
+    background-color: #666; /* Цвет фона при наведении на кнопки */
+}
+
+.tag-wrapper {
+    border-radius: 50%; /* Округлая форма */
+    background-color: rgba(255, 255, 255, 0.1); /* Полупрозрачный фон */
+    padding: 5px; /* Отступы вокруг тега */
+    transition: background-color 0.3s; /* Плавный переход для фона */
+}
+
+.tag-wrapper:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Фон при наведении */
+}
+
+.filters-section {
+    display: flex;
+    flex-direction: column; /* Выровнять элементы вертикально */
+    margin: 20px 0; /* Отступы сверху и снизу */
+    padding: 15px; /* Внутренние отступы для всего контейнера */
+    border: 1px solid #444; /* Тонкая рамка вокруг блока */
+    border-radius: 8px; /* Округлые углы */
+    color: #fff; /* Цвет текста */
+}
+
+.filters-section label {
+    margin-bottom: 5px; /* Отступ снизу для меток */
+    font-weight: bold; /* Жирный шрифт для меток */
+}
+
+.filters-section select {
+    padding: 10px; /* Внутренние отступы для селектов */
+    margin-bottom: 15px; /* Отступ снизу для селектов */
+    border: 2px solid #555; /* Цвет рамки */
+    border-radius: 5px; /* Округлые углы для селектов */
+    background-color: #333; /* Цвет фона для селектов */
+    color: #fff; /* Цвет текста в селектах */
+    font-size: 16px; /* Размер шрифта */
+    transition: border-color 0.3s, background-color 0.3s; /* Плавный переход для цвета рамки и фона */
+}
+
+.filters-section select:hover {
+    border-color: #888; /* Цвет рамки при наведении */
+    background-color: #555; /* Цвет фона при наведении */
+}
+
+.filters-section select:focus {
+    outline: none; /* Убираем стандартный контур */
+    border-color: #ff4757; /* Цвет рамки при фокусе */
+}
+
+
+

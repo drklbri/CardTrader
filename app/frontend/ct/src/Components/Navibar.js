@@ -104,7 +104,7 @@ const Navibar = () => {
 
             {menuOpen && (
                 <div className="menu" onMouseLeave={closeMenu}>
-                    <button className="menu-item" onClick={() => handleNavigation('/main')}>Главная</button>
+                    <button className="menu-item" onClick={() => handleNavigation('/')}>Главная</button>
                     {isAuthenticated ? (
                         <>
                             <button className="menu-item" onClick={() => handleNavigation(`/user/${currentUser.username}`)}>Личный кабинет</button>
