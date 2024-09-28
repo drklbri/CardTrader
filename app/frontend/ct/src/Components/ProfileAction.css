@@ -1,0 +1,92 @@
+.profile-actions-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 4%;
+    margin-top: 3%;
+    padding-top: 3%;
+    padding-bottom: 0.65%;
+    background-color: #555;
+    color: white;
+    border-radius: 12px;
+    max-width: 500px;
+
+}
+
+.profile-button {
+/*    background-color: #4a7da5;
+    color: #f0f0f0; !* Тёмный текст для контраста *!*/
+    background-color: #333333;
+    color: #f0f0f0; /* Тёмный текст для контраста */
+    border: none;
+    padding: 10px 15px; /* Увеличены отступы для более комфортного клика */
+    border-radius: 8px;
+    font-size: 16px; /* Немного увеличен размер текста для удобочитаемости */
+    cursor: pointer;
+    margin-bottom: 10px;
+    width: 80%;
+    text-align: center;
+    transition: background-color 0.3s, color 0.3s; /* Плавная анимация для фона и цвета текста */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Лёгкая тень для эффекта приподнятости */
+}
+
+.profile-button:hover {
+    background-color: #3a3a3a; /* Яркий оттенок жёлто-оранжевого при наведении */
+    color: #fff; /* Белый текст при наведении */
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7); /* Полупрозрачный фон */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #555;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    position: relative;
+    text-align: center;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.modal-actions {
+    margin-top: 20px;
+}
+
+.confirm-button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 100px;
+    border-radius: 8px;
+    font-size: 20px;
+    cursor: pointer;
+    margin: 10px;
+}
+
+.confirm-button:hover {
+    background-color: #555;
+}
+
+.cancel-button:hover {
+    background-color: #777;
+}
+

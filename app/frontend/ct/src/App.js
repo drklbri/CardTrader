@@ -1,19 +1,72 @@
-import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Button} from "react-bootstrap";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import MainPage from "./Pages/MainPage";
+import Cabinet from "./Pages/Cabinet";
+import AuthPage from "./Pages/AuthPage";
+import RegistrationPage from "./Pages/RegistrationPage";
 import Navibar from "./Components/Navibar";
-import Filters from "./Components/Filters";
-
+import UserProfile from "./Pages/UserProfile";
+import AnnouncementPage from './Pages/AnnouncementPage'; // Импортируем компонент страницы объявления
+import {useEffect, useState} from "react";
+import { AuthContext } from './Components/AuthContext';
+import axios from "axios";
+import CreateAnnouncement from "./Pages/CreateAnnouncement";
+import DeletePage from "./Pages/DeletePage";
+import SearchResultPage from "./Pages/SearchResultPage"
 
 function App() {
-  return (
-      <div className="app-container">
-          <Navibar />
-          <Filters />{/* Рендерим компонент Navigation */}
-          {/* Дополнительный контент вашего приложения */}
-      </div>
-  );
+    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('access_token'));
+    const [currentUser, setCurrentUser] = useState(null);
+
+    const login = (accessToken, refreshToken) => {
+        localStorage.setItem('access_token', accessToken);
+        localStorage.setItem('refresh_token', refreshToken);
+        setIsAuthenticated(true);
+    };
+
+    const logout = () => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        setIsAuthenticated(false);
+    };
+
+    useEffect(() => {
+        const fetchCurrentUser = async () => {
+            if (isAuthenticated) {
+                const accessToken = localStorage.getItem('access_token');
+                const response = await axios.get('https://card-trader.online/auth/user', {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+                setCurrentUser(response.data);
+            }
+        };
+
+        fetchCurrentUser();
+    }, [isAuthenticated]);
+
+    return (
+        <AuthContext.Provider value={{ isAuthenticated, login, logout, currentUser }}>
+            <div className="app-container">
+                <BrowserRouter>
+                    <Navibar />
+                    <Routes>
+                        <Route path="/" element={<MainPage />} />
+                        <Route path="/cabinet" element={<Cabinet />} />
+                        <Route path="/auth" element={<AuthPage />} />
+                        <Route path="/register" element={<RegistrationPage />} />
+                        <Route path="/user/:login" element={<UserProfile/>} />
+                        <Route path="/announcement/:id" element={<AnnouncementPage/>} /> {/* Добавляем маршрут для страницы объявления */}
+                        <Route path="/createAnnouncement" element={<CreateAnnouncement/>} />
+                        <Route path="/deletePage" element={<DeletePage/>} />
+                        <Route path="/search" element={<SearchResultPage />} />
+                    </Routes>
+                </BrowserRouter>
+            </div>
+        </AuthContext.Provider>
+    );
 }
 
 export default App;
