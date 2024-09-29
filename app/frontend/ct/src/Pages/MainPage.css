@@ -1,0 +1,55 @@
+.announcements-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* Установите 7 колонок по умолчанию */
+    gap: 15px; /* Расстояние между превью */
+    margin-top: 10vh;
+    margin-left: 4%; /* Положение по умолчанию */
+    transition: margin-left 0.3s ease; /* Плавный переход для margin-left */
+}
+
+
+.show-more-button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.show-more-button:hover {
+    background-color: #0056b3;
+}
+
+.announcement-preview {
+    transition: width 0.3s ease, height 0.3s ease; /* Плавный переход для ширины и высоты превью */
+}
+
+.filters-sidebar.open + .announcements-grid {
+    grid-template-columns: repeat(5, 1fr); /* Уменьшаем до 6 колонок при открытии шторки */
+    margin-left: 16%; /* Увеличиваем отступ слева */
+}
+
+.filters-sidebar:not(.open) + .announcements-grid {
+    grid-template-columns: repeat(6, 1fr); /* Восстанавливаем 7 колонок при закрытии шторки */
+    margin-left: 4%; /* Восстанавливаем отступ при закрытии шторки */
+}
+
+.announcement-preview {
+    transition: transform 0.3s ease; /* Плавный переход для перемещения элементов */
+}
+
+.link {
+    color: #ffffff; /* Белый цвет текста для темного фона */
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.link:hover {
+    color: #f39c12;
+    border-bottom: 2px solid #f39c12;
+}

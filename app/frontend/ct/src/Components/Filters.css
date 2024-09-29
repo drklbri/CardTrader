@@ -1,0 +1,228 @@
+.filters-sidebar {
+    position: fixed;
+    top: clamp(50px, 7vh, 10vh);
+    left: -12vw; /* По умолчанию скрыта */
+    width: 15vw; /* Устанавливаем ширину */
+    height: calc(100vh - clamp(50px, 7vh, 10vh)); /* Высота шторки меньше высоты экрана */
+    background-color: #383838;
+    color: #fff;
+    transition: left 0.3s ease;
+    padding-left: 1vw;
+    z-index: 999;
+    overflow-y: hidden; /* Добавляем прокрутку */
+}
+
+.filters-sidebar.open  {
+    left: 0; /* При открытии показываем шторку */
+    overflow: auto;
+}
+
+.filters-content {
+    margin-top: 40px;
+    opacity: 0;
+}
+
+.filters-sidebar.open .filters-content {
+    opacity: 1; /* При открытии меняем непрозрачность */
+}
+
+.condition-title,
+.rarity-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #fff;
+}
+
+.condition-options,
+.rarity-options {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.condition-button,
+.rarity-button {
+    background-color: #444; /* Цвет фона кнопки */
+    color: #fff; /* Цвет текста */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.condition-button:hover,
+.rarity-button:hover {
+    background-color: #555; /* Цвет фона при наведении */
+}
+
+.condition-button.active,
+.rarity-button.active {
+    background-color: #888; /* Цвет фона для выбранной кнопки */
+    transform: scale(1.05); /* Увеличение размера выбранной кнопки */
+}
+
+.menu-icon {
+    width: 25px;
+    height: 4px;
+    background-color: #fff;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+}
+
+.menu-toggleF {
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 35px;
+}
+
+.menu-toggleF::before,
+.menu-toggleF::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    border-radius: 5px;
+    border: 2px solid rgba(255, 255, 255, 0.1); /* Цвет обводки меню */
+    opacity: 0;
+    transition: opacity 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.menu-toggleF:hover::after {
+    opacity: 0.5;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #fff;
+}
+
+.apply-button {
+    cursor: pointer;
+    display: inline-block;
+    padding: 3vh 20px;
+    background-color: #333; /* Темный цвет фона */
+    color: #fff; /* Цвет текста */
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s;
+}
+
+.apply-button:hover {
+    background-color: #555; /* Цвет фона при наведении */
+}
+
+.apply-button:focus {
+    outline: none;
+}
+
+.apply-button:active {
+    transform: scale(0.95); /* Уменьшение размера при нажатии */
+}
+
+/* Новые стили для поиска тегов */
+.tags-suggestions {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+    border-radius: 5px;
+    max-height: 150px; /* Ограничение высоты списка */
+    overflow-y: auto; /* Прокрутка для списка тегов */
+}
+
+.tag-item {
+    padding: 8px 10px;
+    margin: 8px;
+    color: #fff; /* Цвет текста для тегов */
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.tag-item:hover {
+    background-color: #555; /* Цвет фона при наведении на тег */
+}
+
+.tag-item.selected {
+    background-color: #888; /* Цвет фона для выбранного тега */
+    font-weight: bold; /* Увеличение веса шрифта для выделенного тега */
+}
+
+.search-input-filter {
+    margin-top: 5%;
+    margin-bottom: 5%;
+    flex-grow: 1;
+    max-width: 300px;
+    width: 90%;
+    height: 40px;
+    padding: 6px;
+    border-radius: 5px;
+    border: 2px solid #555;
+    background-color: #444;
+    color: #fff;
+    margin-right: 9%;
+}
+
+.selected-tags {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.selected-tag {
+    background-color: #444;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.remove-tag {
+    background: none;
+    border: none;
+    color: #ffffff; /* Красный цвет для кнопки удаления */
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+/* Медиа-запросы для адаптации стилей на меньших экранах */
+@media (max-width: 1440px) {
+    .filters-sidebar {
+        width: 18vw; /* Увеличиваем ширину на меньших экранах */
+        left: -14vw; /* Скрываем за экраном в зависимости от ширины */
+    }
+}
+
+@media (max-width: 1024px) {
+    .filters-sidebar {
+        width: 25vw; /* Шторка занимает больше места на узких экранах */
+        left: -20vw; /* Полностью скрыта */
+    }
+}
+
+@media (max-width: 768px) {
+    .filters-sidebar {
+        width: 30vw; /* Больше места для шторки на планшетах */
+        left: -23vw; /* Полностью скрыта */
+    }
+}
+
+@media (max-width: 480px) {
+    .filters-sidebar {
+        width: 40vw; /* Почти половина экрана на мобильных устройствах */
+        left: -29vw; /* Скрываем на мобильных */
+    }
+}
+
+@media (max-width: 360px) {
+    .filters-sidebar {
+        width: 50vw; /* Половина экрана на очень маленьких экранах */
+        left: -49vw; /* Полностью скрыта */
+    }
+}

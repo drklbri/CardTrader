@@ -1,0 +1,47 @@
+.search-results-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f4f4f4;
+    min-height: 100vh; /* Минимальная высота страницы */
+}
+
+.search-results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Автоматическое распределение колонок */
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px; /* Максимальная ширина контейнера */
+    margin-top: 20px;
+}
+
+.search-result-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.no-results-message {
+    font-size: 18px;
+    color: #555;
+    margin-top: 50px;
+    text-align: center;
+}
+
+.search-result-query-title {
+    margin-top: 1%;
+    font-size: 28px; /* Размер шрифта для выделения */
+    font-weight: bold; /* Жирный шрифт для акцента */
+    color: white; /* Темно-серый цвет */
+    text-align: center; /* Центрирование текста */
+    margin-bottom: 20px; /* Отступ снизу */
+    padding: 10px; /* Отступ внутри заголовка */
+    border-bottom: 2px solid #000000; /* Нижняя граница с цветом, как у кнопки */
+    display: inline-block; /* Стилизованное отображение блока */
+    background-color: #555; /* Легкий фон для выделения */
+    border-radius: 8px; /* Скругление углов */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Небольшая тень для объема */
+}
