@@ -15,7 +15,7 @@ const MainPage = () => {
     useEffect(() => {
         const fetchAnnouncements = async () => {
             try {
-                const response = await axios.get('https://card-trader.online/announcements');
+                const response = await axios.get('announcements');
                 setAnnouncements(response.data);
                 setFilteredAnnouncements(response.data); // Изначально показываем все объявления
             } catch (error) {
