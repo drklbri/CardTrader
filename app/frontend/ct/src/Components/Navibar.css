@@ -1,12 +1,21 @@
 .navigation-container {
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between; /* Выравнивание по краям */
     align-items: center;
-    background-color: #333;
+    background-color: #383838;
     color: #fff;
-    padding: 10px 20px;
-    z-index: 100; /* Добавляем высокий z-index для меню */
+    padding: 1vh 2vw;
+    z-index: 100;
+}
+
+.button-container {
+    display: flex; /* Используем flexbox для выравнивания кнопок */
+    align-items: center; /* Вертикально центрируем кнопки */
+    margin-left: auto; /* Выравнивание по правому краю */
 }
 
 .avatar {
@@ -21,6 +30,7 @@
     cursor: pointer;
     padding: 10px 20px;
     position: relative;
+    white-space: nowrap; /* Предотвращаем перенос текста */
 }
 
 .menu-toggle::before {
@@ -104,37 +114,58 @@
 
 .search-input {
     flex-grow: 1;
-    max-width: 300px;
+    max-width: 40vw; /* Ограничиваем ширину на больших экранах */
+    min-width: 200px; /* Минимальная ширина */
     height: 40px;
     padding: 6px;
     border-radius: 5px;
     border: 2px solid #555;
     background-color: #444;
     color: #fff;
-    margin-right: 700px;
-}
-
-@media screen and (max-width: 768px) {
-    .navigation-container {
-        flex-direction: column;
-        align-items: center;
-    }
-    .search-input {
-        margin-bottom: 10px;
-    }
+    margin-right: 20px;
+    margin-left: 5vw;
 }
 
 .create-announcement-button {
-    background-color: #555; /* Зеленый цвет */
-    color: white;
+    background-color: #555; /* Цвет фона */
+    color: white; /* Цвет текста */
     border: none;
     padding: 10px 20px;
-    margin-right: 10px; /* Отступ справа от кнопки, чтобы она была рядом с аватаром */
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
+    margin-right: 10px; /* Отступ справа от кнопки */
+    white-space: nowrap; /* Предотвращаем перенос текста */
 }
 
 .create-announcement-button:hover {
     background-color: #45a049; /* Более темный зеленый при наведении */
+}
+
+/* Правила для экранов с шириной меньше 768px */
+@media screen and (max-width: 768px) {
+    .navigation-container {
+        flex-direction: column;
+        align-items: flex-start; /* Выравниваем элементы по левому краю */
+        padding: 1vh 1vw; /* Меньшие отступы */
+    }
+
+    .menu-toggle {
+        margin-left: auto; /* Оставляем меню справа */
+    }
+
+    .search-input {
+        width: 100%; /* Растягиваем строку поиска по ширине */
+        margin-right: 0; /* Убираем лишние отступы */
+        margin-bottom: 10px; /* Отступ снизу для мобильных экранов */
+    }
+
+    .create-announcement-button {
+        width: 100%; /* Растягиваем кнопку на 100% */
+        margin-bottom: 10px; /* Отступ снизу */
+    }
+
+    .avatar {
+        margin-left: auto; /* Перемещаем аватар вправо */
+    }
 }

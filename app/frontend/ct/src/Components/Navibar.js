@@ -83,23 +83,25 @@ const Navibar = () => {
                 onKeyPress={handleSearch}
             />
 
-            {/* Кнопка для создания объявления */}
-            {isAuthenticated && (
-                <button className="create-announcement-button" onClick={() => handleNavigation('/createAnnouncement')}>
-                    Создать объявление
-                </button>
-            )}
+            <div className="button-container">
+                {isAuthenticated && (
+                    <button className="create-announcement-button"
+                            onClick={() => handleNavigation('/createAnnouncement')}>
+                        Создать объявление
+                    </button>
+                )}
 
-            {isAuthenticated && avatarUrl && ( // Отображаем аватар только если пользователь авторизован и аватар получен
-                <img
-                    src={avatarUrl || 'https://via.placeholder.com/120'} // Плейсхолдер, если URL пуст
-                    className="avatar"
-                    alt="User Avatar"
-                />
-            )}
+                {isAuthenticated && avatarUrl && (
+                    <img
+                        src={avatarUrl || 'https://via.placeholder.com/120'}
+                        className="avatar"
+                        alt="User Avatar"
+                    />
+                )}
 
-            <div className="menu-toggle" onClick={toggleMenu}>
-                Меню
+                <div className="menu-toggle" onClick={toggleMenu}>
+                    Меню
+                </div>
             </div>
 
             {menuOpen && (
@@ -107,13 +109,19 @@ const Navibar = () => {
                     <button className="menu-item" onClick={() => handleNavigation('/')}>Главная</button>
                     {isAuthenticated ? (
                         <>
-                            <button className="menu-item" onClick={() => handleNavigation(`/user/${currentUser.username}`)}>Личный кабинет</button>
+                            <button className="menu-item"
+                                    onClick={() => handleNavigation(`/user/${currentUser.username}`)}>Личный кабинет
+                            </button>
                             <button className="menu-item" onClick={handleLogout}>Выйти</button>
                         </>
                     ) : (
                         <>
-                            <button className="menu-item" onClick={() => handleNavigation('/auth')}>Авторизация</button>
-                            <button className="menu-item" onClick={() => handleNavigation('/register')}>Регистрация</button>
+                            <button className="menu-item"
+                                    onClick={() => handleNavigation('/authorization')}>Авторизация
+                            </button>
+                            <button className="menu-item"
+                                    onClick={() => handleNavigation('/registration')}>Регистрация
+                            </button>
                         </>
                     )}
                 </div>

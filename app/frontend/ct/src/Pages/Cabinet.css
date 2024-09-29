@@ -2,7 +2,7 @@
     display: flex; /* Используем flex для создания двух колонок */
     justify-content: space-between;
     align-items: flex-start; /* Выравнивание по верхнему краю */
-    padding: 20px;
+    margin-top: 7vh;
     gap: 20px; /* Отступ между колонками */
 }
 

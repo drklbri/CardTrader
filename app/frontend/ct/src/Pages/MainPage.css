@@ -2,10 +2,9 @@
     display: grid;
     grid-template-columns: repeat(6, 1fr); /* Установите 7 колонок по умолчанию */
     gap: 15px; /* Расстояние между превью */
-    margin-top: 20px;
+    margin-top: 10vh;
     margin-left: 4%; /* Положение по умолчанию */
     transition: margin-left 0.3s ease; /* Плавный переход для margin-left */
-    overflow: hidden; /* Скрываем лишнее */
 }
 
 

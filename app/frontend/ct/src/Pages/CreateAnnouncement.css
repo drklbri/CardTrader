@@ -5,7 +5,9 @@
     padding: 20px;
     border-radius: 20px;
     width: 90%;
-    margin: 6vh auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10%;
 }
 
 /* Вкладки */
@@ -177,6 +179,8 @@
     color: #fff;
     border: none;
     border-radius: 5px;
+    min-width: 100px;
+    min-height: 40px;
 }
 
 /* Кнопка создания объявления */
@@ -285,5 +289,17 @@
     gap: 2vh;
     margin-left: 2vh;
     margin-right: 3vh;
+}
+
+@media screen and (max-width: 768px) {
+    .create-announcement-container {
+        margin-top: 20%; /* Увеличиваем отступ сверху при узком разрешении */
+    }
+
+    .announcement-details input,
+    .announcement-details textarea {
+        min-width: 100px; /* Минимальная ширина для полей ввода */
+        max-width: 100%; /* Максимальная ширина для полей ввода */
+    }
 }
 
