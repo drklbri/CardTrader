@@ -8,6 +8,7 @@ const CreateAnnouncement = () => {
     const [selectedCondition, setSelectedCondition] = useState('minor_wear'); // Состояние
     const [selectedRarity, setSelectedRarity] = useState('common'); // Редкость
     const [selectedImage, setSelectedImage] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(''); // State for success message
 
     const handleAddCard = () => {
         setCards([...cards, { id: cards.length + 1, tags: [], images: [] }]);
@@ -84,6 +85,11 @@ const CreateAnnouncement = () => {
                 }),
             });
 
+            // Проверяем, успешен ли ответ
+            if (!response.ok) {
+                throw new Error('Ошибка при создании объявления');
+            }
+
             // Получаем последнее объявление
             const latestAnnouncementResponse = await fetchLatestAnnouncement();
             const announcementId = latestAnnouncementResponse[0].id;
@@ -93,7 +99,6 @@ const CreateAnnouncement = () => {
 
             // Отправляем запросы на создание карт для каждой вкладки
             for (const card of cards) {
-                console.log(card.tags)
                 const cardResponse = await fetch('/cards', {
                     method: 'POST',
                     headers: {
@@ -108,8 +113,6 @@ const CreateAnnouncement = () => {
                     }),
                 });
 
-                console.log(cardResponse)
-
                 const cardData = await cardResponse.json(); // Получаем данные созданной карты
                 cardIds.push(cardData.id); // Сохраняем ID созданной карты
             }
@@ -120,6 +123,11 @@ const CreateAnnouncement = () => {
                 const images = cards[i].images; // Получаем изображения из текущей карты
                 await uploadCardImages(cardId, images); // Загружаем изображения для этой карты
             }
+
+            // Успешное создание объявления
+            setSuccessMessage('Объявление успешно создано!'); // Устанавливаем сообщение об успехе
+            setAnnouncementData({ name: '', description: '', contactInfo: '' }); // Очищаем данные формы
+            setCards([{ id: 1, tags: [], images: [] }]); // Очищаем карты
 
         } catch (error) {
             console.error(error);
@@ -207,7 +215,7 @@ const CreateAnnouncement = () => {
                                     const imageUrl = URL.createObjectURL(image); // Create a URL for the file for display
                                     return (
                                         <div key={index} className="image-container">
-                                            <img src={imageUrl} alt={`Preview ${index}`}/>
+                                            <img src={imageUrl} alt={`Preview ${index}`} />
                                             <button
                                                 className="remove-image-button"
                                                 onClick={() => handleImageRemove(cards[currentTab].id, index)}
@@ -325,6 +333,9 @@ const CreateAnnouncement = () => {
             {currentTab === cards.length && (
                 <button className="create-button" onClick={handleSubmit}>Создать объявление</button>
             )}
+
+            {/* Success Message */}
+            {successMessage && <div className="success-message">{successMessage}</div>}
         </div>
     );
 };

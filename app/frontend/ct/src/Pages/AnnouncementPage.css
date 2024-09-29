@@ -15,6 +15,11 @@
     margin-right: 1%;
 }
 
+.announcement-details {
+    width: 70%; /* Убедитесь, что ширина подходит для небольших экранов */
+    margin-left: 10px; /* Добавляем отступ для разделения с сайдбаром */
+}
+
 /* Большое превью изображения */
 .image-preview {
     width: 100%;
@@ -489,5 +494,24 @@ textarea {
     border-color: #ff4757; /* Цвет рамки при фокусе */
 }
 
+@media (max-width: 1024px) {
+    .announcement-page-container {
+        flex-direction: column; /* Вертикальная ориентация на мобильных */
+        align-items: center; /* Центрирование элементов */
+    }
+
+    .announcement-sidebar {
+        width: 100%; /* Занимает всю ширину */
+        margin-bottom: 20px; /* Отступ снизу */
+    }
+
+    .announcement-details {
+        width: 100%; /* Занимает всю ширину */
+    }
+
+    .gallery {
+        flex-direction: column; /* Вертикальное расположение галереи изображений на маленьких экранах */
+    }
+}
 
 

@@ -1,18 +1,29 @@
 .filters-sidebar {
-    position: absolute;
-    top: 6%;
-    left: -13%;
-    width: 300px;
-    height: 100%;
-    background-color: #333;
+    position: fixed;
+    top: clamp(50px, 7vh, 10vh);
+    left: -12vw; /* По умолчанию скрыта */
+    width: 15vw; /* Устанавливаем ширину */
+    height: calc(100vh - clamp(50px, 7vh, 10vh)); /* Высота шторки меньше высоты экрана */
+    background-color: #383838;
     color: #fff;
-    padding: 20px;
     transition: left 0.3s ease;
+    padding-left: 1vw;
     z-index: 999;
+    overflow-y: hidden; /* Добавляем прокрутку */
 }
 
-.filters-sidebar.open {
-    left: 0;
+.filters-sidebar.open  {
+    left: 0; /* При открытии показываем шторку */
+    overflow: auto;
+}
+
+.filters-content {
+    margin-top: 40px;
+    opacity: 0;
+}
+
+.filters-sidebar.open .filters-content {
+    opacity: 1; /* При открытии меняем непрозрачность */
 }
 
 .condition-title,
@@ -62,10 +73,6 @@
     transition: transform 0.3s ease;
 }
 
-.filters-content {
-    margin-top: 40px;
-}
-
 .menu-toggleF {
     cursor: pointer;
     position: absolute;
@@ -75,17 +82,7 @@
     height: 35px;
 }
 
-.menu-toggleF::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    width: calc(100% + 4px);
-    height: calc(100% + 4px);
-    border-radius: 5px;
-    border: 2px solid rgba(255, 255, 255, 0.1); /* Цвет обводки меню */
-}
-
+.menu-toggleF::before,
 .menu-toggleF::after {
     content: '';
     position: absolute;
@@ -94,7 +91,7 @@
     width: calc(100% + 4px);
     height: calc(100% + 4px);
     border-radius: 5px;
-    border: 2px solid transparent;
+    border: 2px solid rgba(255, 255, 255, 0.1); /* Цвет обводки меню */
     opacity: 0;
     transition: opacity 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
@@ -108,13 +105,13 @@
 .apply-button {
     cursor: pointer;
     display: inline-block;
-    padding: 10px 20px;
+    padding: 3vh 20px;
     background-color: #333; /* Темный цвет фона */
     color: #fff; /* Цвет текста */
     border: none;
     border-radius: 5px;
     font-size: 16px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s;
 }
 
 .apply-button:hover {
@@ -136,9 +133,8 @@
     margin: 10px 0;
     border-radius: 5px;
     max-height: 150px; /* Ограничение высоты списка */
-    overflow-y: auto;
+    overflow-y: auto; /* Прокрутка для списка тегов */
 }
-
 
 .tag-item {
     padding: 8px 10px;
@@ -195,3 +191,38 @@
     cursor: pointer;
 }
 
+/* Медиа-запросы для адаптации стилей на меньших экранах */
+@media (max-width: 1440px) {
+    .filters-sidebar {
+        width: 18vw; /* Увеличиваем ширину на меньших экранах */
+        left: -14vw; /* Скрываем за экраном в зависимости от ширины */
+    }
+}
+
+@media (max-width: 1024px) {
+    .filters-sidebar {
+        width: 25vw; /* Шторка занимает больше места на узких экранах */
+        left: -20vw; /* Полностью скрыта */
+    }
+}
+
+@media (max-width: 768px) {
+    .filters-sidebar {
+        width: 30vw; /* Больше места для шторки на планшетах */
+        left: -23vw; /* Полностью скрыта */
+    }
+}
+
+@media (max-width: 480px) {
+    .filters-sidebar {
+        width: 40vw; /* Почти половина экрана на мобильных устройствах */
+        left: -29vw; /* Скрываем на мобильных */
+    }
+}
+
+@media (max-width: 360px) {
+    .filters-sidebar {
+        width: 50vw; /* Половина экрана на очень маленьких экранах */
+        left: -49vw; /* Полностью скрыта */
+    }
+}

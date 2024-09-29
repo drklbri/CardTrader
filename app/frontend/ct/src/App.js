@@ -55,8 +55,8 @@ function App() {
                     <Routes>
                         <Route path="/" element={<MainPage />} />
                         <Route path="/cabinet" element={<Cabinet />} />
-                        <Route path="/auth" element={<AuthPage />} />
-                        <Route path="/register" element={<RegistrationPage />} />
+                        <Route path="/authorization" element={<AuthPage />} />
+                        <Route path="/registration" element={<RegistrationPage />} />
                         <Route path="/user/:login" element={<UserProfile/>} />
                         <Route path="/announcement/:id" element={<AnnouncementPage/>} /> {/* Добавляем маршрут для страницы объявления */}
                         <Route path="/createAnnouncement" element={<CreateAnnouncement/>} />
