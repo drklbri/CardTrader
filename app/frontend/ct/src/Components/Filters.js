@@ -31,7 +31,7 @@ const Filters = ({ applyFilters, onToggle }) => {
 
     useEffect(() => {
         const fetchTags = async () => {
-            const response = await fetch('/announcements');
+            const response = await fetch('api/announcements');
             const data = await response.json();
             const allTags = [...new Set(data.map(announcement => announcement.tags).flat())];
             setTags(allTags);

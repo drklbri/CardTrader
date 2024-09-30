@@ -17,7 +17,7 @@ const Cabinet = () => {
     useEffect(() => {
         const fetchAnnouncements = async () => {
             try {
-                const response = await axios.get('https://card-trader.online/announcements', {
+                const response = await axios.get('api/announcements', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('access_token')}`,
                     },

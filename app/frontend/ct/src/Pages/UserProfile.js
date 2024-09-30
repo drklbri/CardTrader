@@ -37,13 +37,13 @@ const UserProfile = () => {
         const fetchUserData = async () => {
             try {
                 // Получаем данные пользователя
-                const response = await axios.get(`/auth/user/login/${login}/`);
+                const response = await axios.get(`api/auth/user/login/${login}/`);
                 if (response.data) {
                     setUserData(response.data);
                     setImageUrl(response.data.avatar || '');
 
                     // Получаем объявления пользователя
-                    const announcementsResponse = await axios.get(`https://card-trader.online/announcements/user/${login}`, {
+                    const announcementsResponse = await axios.get(`api/announcements/user/${login}`, {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem('access_token')}`,
                         },
@@ -51,7 +51,7 @@ const UserProfile = () => {
                     setAnnouncements(announcementsResponse.data);
                     setVisibleAnnouncements(announcementsResponse.data.slice(0, visibleCount));
 
-                    const commentsResponse = await axios.get(`/comments/user/${login}/announcements/`);
+                    const commentsResponse = await axios.get(`api/comments/user/${login}/announcements/`);
                     setComments(commentsResponse.data.slice(0, 3));
                 } else {
                     setError('Пользователь не найден.');
@@ -77,7 +77,7 @@ const UserProfile = () => {
     // Функция для удаления объявления
     const handleDeleteAnnouncement = async (announcementId) => {
         try {
-            await axios.delete(`/announcements/${announcementId}/`, {
+            await axios.delete(`api/announcements/${announcementId}/`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('access_token')}`,
                 },
@@ -93,7 +93,7 @@ const UserProfile = () => {
 
     const handleBlockUser = async () => {
         try {
-            const response = await axios.put(`/auth/user/block/${login}/`, {
+            const response = await axios.put(`api/auth/user/block/${login}/`, {
                 is_blocked: true
             }, {
                 headers: {
@@ -112,7 +112,7 @@ const UserProfile = () => {
 
     const handleUnblockUser = async () => {
         try {
-            const response = await axios.put(`/auth/user/block/${login}/`, {
+            const response = await axios.put(`api/auth/user/block/${login}/`, {
                 is_blocked: false
             }, {
                 headers: {

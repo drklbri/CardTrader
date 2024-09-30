@@ -10,12 +10,12 @@ const MainPage = () => {
     const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
     const [visibleAnnouncements, setVisibleAnnouncements] = useState(18);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [filters, setFilters] = useState({});
+    const [ setFilters] = useState({});
 
     useEffect(() => {
         const fetchAnnouncements = async () => {
             try {
-                const response = await axios.get('announcements');
+                const response = await axios.get('api/announcements');
                 setAnnouncements(response.data);
                 setFilteredAnnouncements(response.data); // Изначально показываем все объявления
             } catch (error) {
@@ -59,7 +59,7 @@ const MainPage = () => {
             for (const announcement of filtered) {
                 if (announcement.cards.length === 0) {continue}
                 const cardId = announcement.cards[0]; // Берем первую карту
-                const cardResponse = await axios.get(`/cards/${cardId}`);
+                const cardResponse = await axios.get(`api/cards/${cardId}`);
                 const card = cardResponse.data;
                 console.log(condition, card.condition)
                 const isConditionMatch = !condition || card.condition === condition;

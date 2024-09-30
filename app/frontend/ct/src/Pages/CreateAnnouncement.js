@@ -72,7 +72,7 @@ const CreateAnnouncement = () => {
     const handleSubmit = async () => {
         try {
             // Сначала отправляем запрос для создания объявления
-            const response = await fetch('/announcements', {
+            const response = await fetch('api/announcements', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ const CreateAnnouncement = () => {
 
             // Отправляем запросы на создание карт для каждой вкладки
             for (const card of cards) {
-                const cardResponse = await fetch('/cards', {
+                const cardResponse = await fetch('api/cards', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ const CreateAnnouncement = () => {
             for (const image of images) {
                 const formData = new FormData();
                 formData.append('picture', image); // Append the file directly
-                const response = await fetch(`/cards/${cardId}/pictures/`, {
+                const response = await fetch(`api/cards/${cardId}/pictures/`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('access_token')}`
@@ -157,7 +157,7 @@ const CreateAnnouncement = () => {
     // Функция для получения последнего объявления
     const fetchLatestAnnouncement = async () => {
         try {
-            const response = await fetch('/announcements/latest/?limit=1');
+            const response = await fetch('api/announcements/latest/?limit=1');
 
             const data = await response.json();
             console.log("Последнее объявление:", data);

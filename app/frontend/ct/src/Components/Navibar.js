@@ -13,7 +13,7 @@ const Navibar = () => {
 
     const fetchAvatar = async () => {
         try {
-            const response = await axios.get('https://card-trader.online/profile/', {
+            const response = await axios.get('api/profile/', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('access_token')}`, // Авторизация через токен
                 },

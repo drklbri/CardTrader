@@ -15,7 +15,7 @@ const ProfileActions = () => {
 
         try {
             console.log(formData)
-            const response = await axios.post('https://card-trader.online/profile/', formData, {
+            const response = await axios.post('api/profile/', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${localStorage.getItem('access_token')}`, // Токен для авторизации
@@ -45,7 +45,7 @@ const ProfileActions = () => {
     // Обработчик удаления аватара после подтверждения
     const handleDeleteAvatar = async () => {
         try {
-            const response = await axios.delete('https://card-trader.online/profile/', {
+            const response = await axios.delete('api/profile/', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('access_token')}`, // Токен для авторизации
                 },

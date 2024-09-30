@@ -17,7 +17,7 @@ const SearchResultsPage = () => {
     useEffect(() => {
         const fetchAnnouncements = async () => {
             try {
-                const response = await axios.get('https://card-trader.online/announcements');
+                const response = await axios.get('api/announcements');
                 setAnnouncements(response.data);
             } catch (error) {
                 console.error('Ошибка при загрузке объявлений:', error);

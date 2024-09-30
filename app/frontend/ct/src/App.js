@@ -35,7 +35,7 @@ function App() {
         const fetchCurrentUser = async () => {
             if (isAuthenticated) {
                 const accessToken = localStorage.getItem('access_token');
-                const response = await axios.get('https://card-trader.online/auth/user', {
+                const response = await axios.get('api/auth/user', {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },

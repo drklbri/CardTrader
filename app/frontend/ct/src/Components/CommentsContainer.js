@@ -12,7 +12,7 @@ const CommentsContainer = ({ comments }) => {
             const newAvatars = {};
             for (const comment of comments) {
                 try {
-                    const response = await axios.get(`/auth/user/login/${comment.name}`);
+                    const response = await axios.get(`api/auth/user/login/${comment.name}`);
                     newAvatars[comment.name] = response.data.avatar_url || 'https://via.placeholder.com/40';
                 } catch (error) {
                     console.error(`Ошибка при загрузке аватара для ${comment.name}:`, error);

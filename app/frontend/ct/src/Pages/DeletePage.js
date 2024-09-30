@@ -15,7 +15,7 @@ const DeletePage = () => {
     useEffect(() => {
         const fetchAnnouncements = async () => {
             try {
-                const response = await axios.get('https://card-trader.online/announcements');
+                const response = await axios.get('api/announcements');
                 setAnnouncements(response.data);
                 setLoading(false); // Скрываем индикатор загрузки после получения данных
             } catch (error) {
@@ -36,7 +36,7 @@ const DeletePage = () => {
     const deleteAnnouncement = async (id) => {
         try {
             // Отправляем DELETE запрос
-            await axios.delete(`https://card-trader.online/announcements/${id}`, {
+            await axios.delete(`api/announcements/${id}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('access_token')}`,
                 }

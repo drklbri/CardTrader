@@ -33,7 +33,7 @@ const AnnouncementPage = () => {
             // If no user is found, try to fetch from server using currentUser.username
             if (currentUser && currentUser.username) {
                 try {
-                    const userResponse = await axios.get(`https://card-trader.online/auth/user/login/${currentUser.username}`);
+                    const userResponse = await axios.get(`api/auth/user/login/${currentUser.username}`);
                     setUser(userResponse.data);
                     localStorage.setItem('currentUser', JSON.stringify(userResponse.data)); // Save user to local storage
                 } catch (error) {
@@ -49,13 +49,13 @@ const AnnouncementPage = () => {
         // Fetch announcement information
         const fetchAnnouncement = async () => {
             try {
-                const response = await axios.get(`https://card-trader.online/announcements/${id}`);
+                const response = await axios.get(`api/announcements/${id}`);
                 setAnnouncement(response.data);
                 setSelectedImage(response.data.card_images[0]); // Set first image as selected
 
                 // Fetch card details using the first card ID
                 const cardId = response.data.cards[0]; // Берем первый ID карты из массива
-                const cardResponse = await axios.get(`https://card-trader.online/cards/${cardId}`);
+                const cardResponse = await axios.get(`api/cards/${cardId}`);
                 setCardDetails(cardResponse.data); // Сохраняем детали карты
             } catch (error) {
                 console.error('Error loading announcement or card details:', error);
@@ -65,14 +65,14 @@ const AnnouncementPage = () => {
         // Fetch comments for the announcement
         const fetchComments = async () => {
             try {
-                const response = await axios.get(`https://card-trader.online/comments/announcement/${id}`);
+                const response = await axios.get(`api/comments/announcement/${id}`);
                 setComments(response.data); // Save the list of comments
 
                 // Fetch avatars for each comment author
                 const avatarPromises = response.data.map(async (comment) => {
                     if (comment.name) {
                         try {
-                            const avatarResponse = await axios.get(`https://card-trader.online/auth/user/login/${comment.name}`);
+                            const avatarResponse = await axios.get(`api/auth/user/login/${comment.name}`);
                             return { name: comment.name, avatar: avatarResponse.data.avatar_url }; // Получаем аватар
                         } catch (error) {
                             console.error(`Error loading avatar for ${comment.name}:`, error);
@@ -119,7 +119,7 @@ const AnnouncementPage = () => {
             };
 
             // Отправляем POST запрос для создания нового комментария с токеном авторизации
-            await axios.post('https://card-trader.online/comments', commentData, {
+            await axios.post('api/comments', commentData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Замените 'token' на реальное имя поля, если нужно
                 },
@@ -209,7 +209,7 @@ const AnnouncementPage = () => {
     const handleSubmitChanges = async () => {
         try {
             // PUT request for the announcement
-            await axios.put(`https://card-trader.online/announcements/${id}/`, {
+            await axios.put(`api/announcements/${id}/`, {
                 name: editedAnnouncement.name,
                 description: editedAnnouncement.description,
                 contact_info: editedAnnouncement.contact_info,
@@ -221,7 +221,7 @@ const AnnouncementPage = () => {
 
             // PUT request for each card
             for (const cardId of announcement.cards) {
-                await axios.put(`https://card-trader.online/cards/${cardId}/`, {
+                await axios.put(`api/cards/${cardId}/`, {
                     announcement: announcement.id,
                     condition: conditionMapping[editedCardDetails.condition],
                     rarity: rarityMapping[editedCardDetails.rarity],
