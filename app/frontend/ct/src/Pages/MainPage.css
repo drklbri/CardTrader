@@ -7,12 +7,16 @@
     transition: margin-left 0.3s ease; /* Плавный переход для margin-left */
 }
 
+.announcements-grid.with-back-button {
+    margin-top: 1vh; /* Измените значение по своему усмотрению */
+}
+
 
 .show-more-button {
     display: block;
     margin: 20px auto;
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color: #333;
     color: white;
     border: none;
     border-radius: 5px;
@@ -20,7 +24,7 @@
 }
 
 .show-more-button:hover {
-    background-color: #0056b3;
+    background-color: #333;
 }
 
 .announcement-preview {
@@ -32,14 +36,16 @@
     margin-left: 16%; /* Увеличиваем отступ слева */
 }
 
-.filters-sidebar:not(.open) + .announcements-grid {
-    grid-template-columns: repeat(6, 1fr); /* Восстанавливаем 7 колонок при закрытии шторки */
-    margin-left: 4%; /* Восстанавливаем отступ при закрытии шторки */
+.announcements-grid.filter-open {
+    grid-template-columns: repeat(5, 1fr); /* Уменьшаем до 5 колонок при открытии фильтра */
+    margin-left: 16%;
 }
 
-.announcement-preview {
-    transition: transform 0.3s ease; /* Плавный переход для перемещения элементов */
+.announcements-grid {
+    grid-template-columns: repeat(6, 1fr); /* Восстанавливаем 6 колонок по умолчанию */
+    margin-left: 4%;
 }
+
 
 .link {
     color: #ffffff; /* Белый цвет текста для темного фона */
@@ -52,4 +58,24 @@
 .link:hover {
     color: #f39c12;
     border-bottom: 2px solid #f39c12;
+}
+
+
+.show-previous-button {
+    background-color: #333; /* Замените цвет на нужный вам */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 46vw;
+    margin-top: 10vh;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between; /* Выравнивание кнопок по горизонтали */
+    align-items: center; /* Выравнивание кнопок по вертикали */
+    margin-bottom: 20px; /* Отступ между кнопками и сеткой */
 }

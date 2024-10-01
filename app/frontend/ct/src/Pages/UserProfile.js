@@ -10,7 +10,7 @@ import "./UserProfile.css";
 import CommentsContainer from "../Components/CommentsContainer";
 
 const UserProfile = () => {
-    const { isAuthenticated, currentUser } = useContext(AuthContext); // Получаем состояние аутентификации
+    const { isAuthenticated, currentUser, isLoading } = useContext(AuthContext); // Получаем состояние аутентификации
     const [imageUrl, setImageUrl] = useState('');
     const [userData, setUserData] = useState(null);
     const [announcements, setAnnouncements] = useState([]);
@@ -22,6 +22,7 @@ const UserProfile = () => {
     const [blockError, setBlockError] = useState(null);
 
     const { login } = useParams();
+
 
     useEffect(() => {
         setUserData(null);
@@ -37,13 +38,13 @@ const UserProfile = () => {
         const fetchUserData = async () => {
             try {
                 // Получаем данные пользователя
-                const response = await axios.get(`api/auth/user/login/${login}/`);
+                const response = await axios.get(`https://card-trader.online/api/auth/user/login/${login}/`);
                 if (response.data) {
                     setUserData(response.data);
                     setImageUrl(response.data.avatar || '');
 
                     // Получаем объявления пользователя
-                    const announcementsResponse = await axios.get(`api/announcements/user/${login}`, {
+                    const announcementsResponse = await axios.get(`https://card-trader.online/api/announcements/user/${login}`, {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem('access_token')}`,
                         },
@@ -51,7 +52,7 @@ const UserProfile = () => {
                     setAnnouncements(announcementsResponse.data);
                     setVisibleAnnouncements(announcementsResponse.data.slice(0, visibleCount));
 
-                    const commentsResponse = await axios.get(`api/comments/user/${login}/announcements/`);
+                    const commentsResponse = await axios.get(`https://card-trader.online/api/comments/user/${login}/announcements/`);
                     setComments(commentsResponse.data.slice(0, 3));
                 } else {
                     setError('Пользователь не найден.');
@@ -74,10 +75,12 @@ const UserProfile = () => {
         setVisibleAnnouncements(announcements.slice(0, nextCount));
     };
 
+
+
     // Функция для удаления объявления
     const handleDeleteAnnouncement = async (announcementId) => {
         try {
-            await axios.delete(`api/announcements/${announcementId}/`, {
+            await axios.delete(`https://card-trader.online/api/announcements/${announcementId}/`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('access_token')}`,
                 },
@@ -91,9 +94,11 @@ const UserProfile = () => {
         }
     };
 
+
+
     const handleBlockUser = async () => {
         try {
-            const response = await axios.put(`api/auth/user/block/${login}/`, {
+            const response = await axios.put(`https://card-trader.online/api/auth/user/block/${login}/`, {
                 is_blocked: true
             }, {
                 headers: {
@@ -112,7 +117,7 @@ const UserProfile = () => {
 
     const handleUnblockUser = async () => {
         try {
-            const response = await axios.put(`api/auth/user/block/${login}/`, {
+            const response = await axios.put(`https://card-trader.online/api/auth/user/block/${login}/`, {
                 is_blocked: false
             }, {
                 headers: {
@@ -134,6 +139,19 @@ const UserProfile = () => {
         setConfirmationModal(announcementId);
     };
 
+
+    const handleAvatarUpdate = (newAvatarUrl) => {
+        setImageUrl(newAvatarUrl);
+    };
+
+    if (!isAuthenticated) {
+        return (
+            <div className="loading-container">
+                <h1>Авторизуйтесь для просмотра</h1>
+            </div>
+        );
+    }
+
     if (error) {
         return (
             <div style={{ textAlign: 'center', marginTop: '20px' }}>
@@ -142,9 +160,9 @@ const UserProfile = () => {
         );
     }
 
-    if (!userData) {
+    if (isLoading || !userData) {
         return (
-            <div style={{ textAlign: 'center', marginTop: '20px' }} className="loading-container">
+            <div style={{ textAlign: 'center' }} className="loading-container">
                 <h1>Данные пользователя загружаются...</h1>
             </div>
         );
@@ -152,8 +170,8 @@ const UserProfile = () => {
 
 
 
-    console.log(currentUser)
     return (
+
         <div className="cabinet-container">
             <div className="left-column">
                 <Avatar
@@ -162,6 +180,9 @@ const UserProfile = () => {
                     averageRating={userData.averageRating || 0}
                     reviewCount={userData.reviewCount || 0}
                 />
+                {isAuthenticated && currentUser.username === login && (
+                    <ProfileActions onAvatarUpdate={handleAvatarUpdate} />
+                    )}
                 {isAuthenticated && currentUser.role === "admin" && (
                     <button className="block-button" onClick={handleBlockUser}>
                         Забанить
@@ -172,7 +193,6 @@ const UserProfile = () => {
                         Разбанить
                     </button>
                 )}
-                {isAuthenticated && currentUser.username === login && <ProfileActions />}
                 <CommentsContainer comments={comments} />
                 {blockError && <div className="error-message">{blockError}</div>} {/* Отображение ошибок блокировки */}
             </div>

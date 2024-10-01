@@ -16,7 +16,7 @@ function AuthForm() {
         e.preventDefault();
 
         try {
-            const response = await axios.post('api/auth/login', {
+            const response = await axios.post('https://card-trader.online/api/auth/login', {
                 email,
                 password
             }, {

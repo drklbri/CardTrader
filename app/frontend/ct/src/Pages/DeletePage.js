@@ -1,25 +1,33 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import Preview from '../Components/Preview';
 import { Link } from 'react-router-dom';
 import "./DeletePage.css";
-import {AuthContext} from "../Components/AuthContext";
+import { AuthContext } from "../Components/AuthContext";
+import Filters from '../Components/Filters'; // Import Filters from MainPage
 
 const DeletePage = () => {
     const [announcements, setAnnouncements] = useState([]);
-    const [visibleAnnouncements, setVisibleAnnouncements] = useState(21);
+    const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const announcementsPerPage = 18; // Number of announcements per page
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [filters, setFilters] = useState({});
+    const [hasMoreAnnouncements, setHasMoreAnnouncements] = useState(true); // To track if more announcements are available
     const { currentUser } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
-    const [isLoadingUser, setIsLoadingUser] = useState(true); // Для отслеживания загрузки currentUser
+    const [isLoadingUser, setIsLoadingUser] = useState(true); // To track loading of currentUser
 
     useEffect(() => {
         const fetchAnnouncements = async () => {
             try {
-                const response = await axios.get('api/announcements');
-                setAnnouncements(response.data);
-                setLoading(false); // Скрываем индикатор загрузки после получения данных
+                const response = await axios.get('https://card-trader.online/api/announcements/paginated');
+                setAnnouncements(response.data.results);
+                setFilteredAnnouncements(response.data.results); // Display all initially
+                setCurrentPage(1); // Set current page to 1
+                setLoading(false); // Stop loading
             } catch (error) {
-                console.error('Ошибка при загрузке объявлений:', error);
+                console.error('Error loading announcements:', error);
                 setLoading(false);
             }
         };
@@ -29,84 +37,116 @@ const DeletePage = () => {
 
     useEffect(() => {
         if (currentUser !== null) {
-            setIsLoadingUser(false); // Скрываем индикатор загрузки после получения пользователя
+            setIsLoadingUser(false); // Hide loading indicator after getting user
         }
     }, [currentUser]);
 
     const deleteAnnouncement = async (id) => {
         try {
-            // Отправляем DELETE запрос
-            await axios.delete(`api/announcements/${id}`, {
+            await axios.delete(`https://card-trader.online/api/announcements/${id}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('access_token')}`,
                 }
             });
-
-            // Обновляем состояние объявлений, исключая удаленное
             setAnnouncements((prev) => prev.filter((announcement) => announcement.id !== id));
-
-            // Можно добавить уведомление или сообщение о успешном удалении
+            setFilteredAnnouncements((prev) => prev.filter((announcement) => announcement.id !== id)); // Update filtered announcements
         } catch (error) {
-            console.error('Ошибка при удалении объявления:', error);
+            console.error('Error deleting announcement:', error);
         }
     };
 
-    const showMoreAnnouncements = () => {
-        setVisibleAnnouncements((prev) => prev + 21);
+    const showMoreAnnouncements = async () => {
+        const nextPage = currentPage + 1;
+        try {
+            const response = await axios.get('https://card-trader.online/api/announcements/paginated', {
+                params: {
+                    page: nextPage,
+                    ...filters
+                }
+            });
+            const moreAnnouncements = response.data.results;
+
+            if (moreAnnouncements.length > 0) {
+                setFilteredAnnouncements((prev) => [...prev, ...moreAnnouncements]);
+                setAnnouncements((prev) => [...prev, ...moreAnnouncements]); // Keep track of all announcements
+                setCurrentPage(nextPage); // Increment current page
+            } else {
+                setHasMoreAnnouncements(false); // Disable button if no more data
+            }
+        } catch (error) {
+            console.error('Error loading more announcements:', error);
+        }
     };
 
-    // Если пользователь все еще загружается, показываем индикатор загрузки
+    const handleFilterToggle = (isOpen) => {
+        setIsFilterOpen(isOpen);
+    };
+
+    const applyFilters = async (filterData) => {
+        setFilters(filterData);
+        try {
+            const response = await axios.get('https://card-trader.online/api/announcements/paginated', {
+                params: {
+                    page: 1,
+                    ...filterData
+                }
+            });
+            setFilteredAnnouncements(response.data.results);
+            setCurrentPage(1); // Reset to first page on filter change
+            setHasMoreAnnouncements(true); // Reset more announcements state
+        } catch (error) {
+            console.error('Error applying filters:', error);
+        }
+    };
+
+    // Show loading indicator if user data is still being fetched
     if (isLoadingUser) {
-        return (
-            <div className="loading-screen">
-                Загрузка...
-            </div>
-        );
+        return <div className="loading-screen">Загрузка...</div>;
     }
 
-    // Если объявления загружаются
+    // Show loading indicator if announcements are still being fetched
     if (loading) {
-        return (
-            <div className="loading-screen">
-                Загрузка объявлений...
-            </div>
-        );
+        return <div className="loading-screen">Загрузка объявлений...</div>;
     }
 
     return (
         <div>
             {currentUser.role === "admin" ? (
-                <div className="announcements-grid">
-                    {announcements.slice(0, visibleAnnouncements).map((announcement) => (
-                        <div key={announcement.id} className="announcement-item">
-                            <Preview
-                                name={
-                                    <Link to={`/announcement/${announcement.id}`} className="link">
-                                        {announcement.name}
-                                    </Link>
-                                }
-                                user={
-                                    <Link to={`/user/${announcement.user_login}`} className="link">
-                                        {announcement.user_login}
-                                    </Link>
-                                }
-                                images={announcement.card_images || ['https://via.placeholder.com/150']}
-                                tags={announcement.tags || ['No tags']}
-                            />
-                            <button className="delete-button" onClick={() => deleteAnnouncement(announcement.id)}>
-                                Удалить
-                            </button>
-                        </div>
-                    ))}
+                <>
+                    <Filters applyFilters={applyFilters} onToggle={handleFilterToggle} />
 
-                    {visibleAnnouncements < announcements.length && (
+                    <div className={`announcements-grid ${isFilterOpen ? 'filter-open' : ''}`}>
+                        {filteredAnnouncements.map((announcement) => (
+                            <div key={announcement.id} className="announcement-item">
+                                <Preview
+                                    name={
+                                        <Link to={`/announcement/${announcement.id}`} className="link">
+                                            {announcement.name}
+                                        </Link>
+                                    }
+                                    user={
+                                        <Link to={`/user/${announcement.user_login}`} className="link">
+                                            {announcement.user_login}
+                                        </Link>
+                                    }
+                                    images={announcement.card_images || ['https://via.placeholder.com/150']}
+                                    tags={announcement.tags || ['No tags']}
+                                />
+                                <button className="delete-button" onClick={() => deleteAnnouncement(announcement.id)}>
+                                    Удалить
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+
+                    {!loading && hasMoreAnnouncements && (
                         <button className="show-more-button" onClick={showMoreAnnouncements}>
                             Показать больше
                         </button>
                     )}
-                </div>
+                </>
             ) : (
-                <div className="no-access-message">sorry no</div>
+                <div className="no-access-message">Извините, у вас нет доступа к этой странице.</div>
             )}
         </div>
     );
