@@ -69,14 +69,6 @@ class AuthService(ABC):
         return user
 
 
-# todo check models, operations, cascade
-# todo add user auth check for crud operation
-# todo add role checkout for endpoints accessing
-# todo check serializers
-# todo read more about access and refresh https://habr.com/ru/articles/538040/, https://habr.com/ru/articles/793058/
-# todo add exception handler in utils package
-# todo add minio connection
-
 class UserService:
 
     def __init__(self, user_id: User, **kwargs):

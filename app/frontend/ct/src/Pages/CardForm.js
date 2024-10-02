@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
+import YandexMetrika from "../Components/YandexMetrika";
+/* global ym */
 
 const CardForm = ({ card, onImageChange, onTagAdd }) => {
     const [tagInput, setTagInput] = useState('');
@@ -13,8 +15,10 @@ const CardForm = ({ card, onImageChange, onTagAdd }) => {
         }
     };
 
+
     return (
         <div className="card-form">
+            <YandexMetrika />
             <div className="image-upload">
                 {card.image ? (
                     <div className="image-preview">

@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import './CreateAnnouncement.css';
+import YandexMetrika from "../Components/YandexMetrika";
+/* global ym */
 
 const CreateAnnouncement = () => {
     const [currentTab, setCurrentTab] = useState(0);
@@ -191,6 +193,7 @@ const CreateAnnouncement = () => {
 
     return (
         <div className="create-announcement-container">
+            <YandexMetrika />
             <div className="tabs-container">
                 {cards.map((card, index) => (
                     <div

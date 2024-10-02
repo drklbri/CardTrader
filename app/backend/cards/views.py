@@ -1,7 +1,11 @@
-from django.shortcuts import render
-from rest_framework import generics, mixins, permissions
+from django.shortcuts import get_object_or_404
+from rest_framework import generics, mixins, permissions, status
 from drf_yasg.utils import swagger_auto_schema
-from .models import Card, Tag, Collection, CardImage, Announcement
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+
+from authorization.permissions import IsNotBlocked
+from .models import Card, Tag, Collection
 from .serializers import CardSerializer, TagSerializer, CollectionSerializer
 
 
@@ -12,7 +16,13 @@ class CardAPIView(generics.GenericAPIView,
                   mixins.CreateModelMixin):
     queryset = Card.objects.all()
     serializer_class = CardSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_permissions(self):
+        method = self.request.method
+        if method == 'PUT':
+            return [IsAdminUser()]
+        else:
+            return [AllowAny()]
 
     @swagger_auto_schema(
         operation_description="Get all cards",
@@ -22,14 +32,15 @@ class CardAPIView(generics.GenericAPIView,
         return self.list(request)
 
     @swagger_auto_schema(
-        operation_description="Create a new card",
+        operation_description="Create a new card with images",
         request_body=CardSerializer,
         responses={201: CardSerializer()}
     )
     def post(self, request):
         serializer = self.get_serializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        return self.create(request)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class CardDetailAPIView(generics.GenericAPIView,
@@ -41,10 +52,16 @@ class CardDetailAPIView(generics.GenericAPIView,
 
     def get_permissions(self):
         method = self.request.method
-        if method == 'DELETE':
-            return [permissions.IsAdminUser()]
+        if method == 'GET':
+            return [AllowAny()]
         else:
-            return [permissions.IsAuthenticated()]
+            return [permissions.IsAuthenticated(), IsNotBlocked()]
+
+    def check_user_owns_announcement(self, request, card):
+        if request.user != card.announcement.user:
+            return Response({'error': 'You do not have permission to modify or delete this card.'},
+                            status=status.HTTP_403_FORBIDDEN)
+        return None
 
     @swagger_auto_schema(
         operation_description="Get a card by ID",
@@ -54,17 +71,25 @@ class CardDetailAPIView(generics.GenericAPIView,
         return self.retrieve(request, pk=pk)
 
     @swagger_auto_schema(
-        operation_description="Update a card",
+        operation_description="Update a card with images",
         request_body=CardSerializer,
         responses={200: CardSerializer()}
     )
     def put(self, request, pk):
+        card = get_object_or_404(Card, id=pk)
+        permission_check = self.check_user_owns_announcement(request, card)
+        if permission_check:
+            return permission_check
         return self.update(request, pk=pk)
 
     @swagger_auto_schema(
         operation_description="Delete a card"
     )
     def delete(self, request, pk):
+        card = get_object_or_404(Card, id=pk)
+        permission_check = self.check_user_owns_announcement(request, card)
+        if permission_check:
+            return permission_check
         return self.destroy(request, pk=pk)
 
 
@@ -73,7 +98,7 @@ class CardByAnnouncementAPIView(generics.GenericAPIView,
     serializer_class = CardSerializer
 
     def get_permissions(self):
-        return [permissions.IsAuthenticated()]
+        return [AllowAny()]
 
     def get_queryset(self):
         announcement_id = self.kwargs.get('announcement_id')
@@ -87,45 +112,18 @@ class CardByAnnouncementAPIView(generics.GenericAPIView,
         return self.list(request, announcement_id=announcement_id)
 
 
-class CardSearchAPIView(generics.GenericAPIView,
-                        mixins.ListModelMixin):
-    serializer_class = CardSerializer
-
-    def get_permissions(self):
-        return [permissions.IsAuthenticated()]
-
-    def get_queryset(self):
-        tags = self.request.query_params.getlist('tags')
-        collection = self.request.query_params.get('collection')
-        condition = self.request.query_params.get('condition')
-
-        queryset = Card.objects.all()
-
-        if tags:
-            queryset = queryset.filter(tags__name__in=tags).distinct()
-
-        if collection:
-            queryset = queryset.filter(collection__name=collection)
-
-        if condition:
-            queryset = queryset.filter(condition=condition)
-
-        return queryset
-
-    @swagger_auto_schema(
-        operation_description="Search cards by tags, collection, and condition",
-        responses={200: CardSerializer(many=True)}
-    )
-    def get(self, request):
-        return self.list(request)
-
-
 class TagAPIView(generics.GenericAPIView,
                  mixins.ListModelMixin,
                  mixins.CreateModelMixin):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_permissions(self):
+        method = self.request.method
+        if method == 'GET':
+            return [AllowAny()]
+        else:
+            return [IsAuthenticated(), IsNotBlocked()]
 
     @swagger_auto_schema(
         operation_description="Get all tags",
@@ -151,7 +149,14 @@ class TagDetailAPIView(generics.GenericAPIView,
                        mixins.DestroyModelMixin):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsNotBlocked)
+
+    def get_permissions(self):
+        method = self.request.method
+        if method == 'GET':
+            return [AllowAny()]
+        else:
+            return [IsAdminUser()]
 
     @swagger_auto_schema(
         operation_description="Get a tag by ID",
@@ -180,7 +185,13 @@ class CollectionAPIView(generics.GenericAPIView,
                         mixins.CreateModelMixin):
     queryset = Collection.objects.all()
     serializer_class = CollectionSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_permissions(self):
+        method = self.request.method
+        if method == 'GET':
+            return [AllowAny()]
+        else:
+            return [IsAuthenticated(), IsNotBlocked()]
 
     @swagger_auto_schema(
         operation_description="Get all collections",
@@ -206,7 +217,14 @@ class CollectionDetailAPIView(generics.GenericAPIView,
                               mixins.DestroyModelMixin):
     queryset = Collection.objects.all()
     serializer_class = CollectionSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsNotBlocked)
+
+    def get_permissions(self):
+        method = self.request.method
+        if method == 'GET':
+            return [AllowAny()]
+        else:
+            return [IsAdminUser()]
 
     @swagger_auto_schema(
         operation_description="Get a collection by ID",
