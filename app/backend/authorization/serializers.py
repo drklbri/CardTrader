@@ -4,6 +4,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from authorization.models import User
 
+class UserBlockSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['is_blocked']
 
 class RequestUserRegistrationSerializer(serializers.Serializer):
     username = serializers.CharField(required=False)
