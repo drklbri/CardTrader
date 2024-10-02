@@ -6,8 +6,8 @@ class Announcement(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(default='', max_length=255)
     contact_info = models.TextField(default='')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    creation_date = models.DateField(default=timezone.now)
 
 class Comments(models.Model):
     name = models.CharField(max_length=255)

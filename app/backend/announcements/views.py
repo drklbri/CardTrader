@@ -1,19 +1,49 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import generics, mixins, permissions
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework import generics, mixins, permissions, status
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
+from rest_framework.response import Response
 
+from authorization.permissions import IsNotBlocked
+from .filters import AnnouncementFilter
 from .models import Announcement, Comments
 from .serializers import AnnouncementSerializer, CommentsSerializer
 
 
 # Create your views here.
+class AnnouncementPagination(PageNumberPagination):
+    page_size = 18
+    page_size_query_param = 'page_size'
+    max_page_size = 18
+
+
+class AnnouncementListAPIView(generics.ListAPIView):
+    serializer_class = AnnouncementSerializer
+    pagination_class = AnnouncementPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = AnnouncementFilter
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        queryset = Announcement.objects.all().order_by('-id')
+        return queryset
+
+
 class AnnouncementAPIView(generics.GenericAPIView,
                           mixins.ListModelMixin,
                           mixins.CreateModelMixin):
     queryset = Announcement.objects.all()
     serializer_class = AnnouncementSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_permissions(self):
+        method = self.request.method
+        if method == 'GET':
+            return [AllowAny()]
+        else:
+            return [IsAuthenticated(), IsNotBlocked()]
 
     @swagger_auto_schema(
         operation_description="Get all announcements",
@@ -25,28 +55,58 @@ class AnnouncementAPIView(generics.GenericAPIView,
     @swagger_auto_schema(
         operation_description="Create a new announcement",
         request_body=AnnouncementSerializer,
-        responses={201: AnnouncementSerializer()}
+        responses={201: "Announcement created successfully"}
     )
     def post(self, request):
         serializer = self.get_serializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        return self.create(request)
+        self.perform_create(serializer)
+        return Response(status=status.HTTP_201_CREATED)
+
+
+class LatestAnnouncementsAPIView(generics.GenericAPIView, mixins.ListModelMixin):
+    serializer_class = AnnouncementSerializer
+
+    def get_permissions(self):
+        return [AllowAny()]
+
+    @swagger_auto_schema(
+        operation_description="Get the latest N announcements",
+        responses={200: AnnouncementSerializer(many=True)},
+        manual_parameters=[
+            openapi.Parameter('limit', openapi.IN_QUERY, description="Number of announcements",
+                              type=openapi.TYPE_INTEGER)
+        ]
+    )
+    def get(self, request):
+        limit = request.query_params.get('limit', 10)
+        queryset = Announcement.objects.all().order_by('-id')[:int(limit)]
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class AnnouncementDetailAPIView(generics.GenericAPIView,
                                 mixins.RetrieveModelMixin,
                                 mixins.UpdateModelMixin,
-                                mixins.DestroyModelMixin
-                                ):
+                                mixins.DestroyModelMixin):
     queryset = Announcement.objects.all()
     serializer_class = AnnouncementSerializer
 
     def get_permissions(self):
         method = self.request.method
-        if method == 'DELETE':
-            return [IsAdminUser()]
+        if method == 'GET':
+            return [AllowAny()]
         else:
-            return [IsAuthenticated()]
+            return [IsAuthenticated(), IsNotBlocked()]
+
+    def check_user_permission(self, request, announcement):
+        if request.user.role == 'admin':
+            return None
+
+        if request.user != announcement.user:
+            return Response({'error': 'You do not have permission to modify or delete this announcement.'},
+                            status=status.HTTP_403_FORBIDDEN)
+        return None
 
     @swagger_auto_schema(
         operation_description="Get an announcement by ID",
@@ -61,16 +121,23 @@ class AnnouncementDetailAPIView(generics.GenericAPIView,
         responses={200: AnnouncementSerializer()}
     )
     def put(self, request, pk):
+        announcement = get_object_or_404(Announcement, id=pk)
+        permission_check = self.check_user_permission(request, announcement)
+        if permission_check:
+            return permission_check
         return self.update(request, pk=pk)
 
     @swagger_auto_schema(
         operation_description="Delete an announcement"
     )
     def delete(self, request, pk):
+        announcement = get_object_or_404(Announcement, id=pk)
+        permission_check = self.check_user_permission(request, announcement)
+        if permission_check:
+            return permission_check
         return self.destroy(request, pk=pk)
 
 
-# todo "error_message": "AnnouncementUserAPIView.get() got an unexpected keyword argument 'user_id'"
 class AnnouncementUserAPIView(generics.GenericAPIView,
                               mixins.ListModelMixin,
                               ):
@@ -79,7 +146,7 @@ class AnnouncementUserAPIView(generics.GenericAPIView,
     def get_permissions(self):
         method = self.request.method
         if method == 'GET':
-            return [IsAuthenticated()]
+            return [AllowAny()]
 
     def get_queryset(self):
         user_id = self.kwargs.get('user_id')
@@ -93,12 +160,40 @@ class AnnouncementUserAPIView(generics.GenericAPIView,
         return self.list(request, user_id=user_id)
 
 
+class AnnouncementUserLoginAPIView(generics.GenericAPIView,
+                                   mixins.ListModelMixin):
+    serializer_class = AnnouncementSerializer
+
+    def get_permissions(self):
+        method = self.request.method
+        if method == 'GET':
+            return [AllowAny()]
+
+    def get_queryset(self):
+        username = self.kwargs.get('username')
+        return Announcement.objects.filter(user__username=username)
+
+    @swagger_auto_schema(
+        operation_description="Get all announcements for a user",
+        responses={200: AnnouncementSerializer(many=True)}
+    )
+    def get(self, request, username):
+        return self.list(request, username=username)
+
+
 class CommentsAPIView(generics.GenericAPIView,
                       mixins.ListModelMixin,
                       mixins.CreateModelMixin):
     queryset = Comments.objects.all()
     serializer_class = CommentsSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsNotBlocked)
+
+    def get_permissions(self):
+        method = self.request.method
+        if method == 'GET':
+            return [AllowAny()]
+        else:
+            return [IsAuthenticated(), IsNotBlocked()]
 
     @swagger_auto_schema(
         operation_description="Get all comments",
@@ -110,39 +205,41 @@ class CommentsAPIView(generics.GenericAPIView,
     @swagger_auto_schema(
         operation_description="Create a new comment",
         request_body=CommentsSerializer,
-        responses={201: CommentsSerializer()}
+        responses={201: openapi.Response('Created')}
     )
     def post(self, request):
-        """
-        Create a new comment. The user is automatically set to the currently authenticated user.
-        """
-        # Prepare data and set the user to the current authenticated user
         data = request.data.copy()
-        data['user'] = request.user.id  # Set the user ID to the current user's ID
+        data['user'] = request.user.id
 
         serializer = self.get_serializer(data=data, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        return self.create(request)
+        self.perform_create(serializer)
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class CommentsDetailAPIView(generics.GenericAPIView,
                             mixins.ListModelMixin,
                             mixins.RetrieveModelMixin,
                             mixins.UpdateModelMixin,
-                            mixins.DestroyModelMixin
-                            ):
+                            mixins.DestroyModelMixin):
     queryset = Comments.objects.all()
     serializer_class = CommentsSerializer
 
     def get_permissions(self):
         method = self.request.method
-        if method == 'DELETE':
-            return [IsAdminUser()]
+        if method == 'GET':
+            return [AllowAny()]
         else:
-            return [IsAuthenticated()]
+            return [IsAuthenticated(), IsNotBlocked()]
+
+    def check_user_permission(self, request, comment):
+        if request.user != comment.user and not request.user.is_staff:
+            return Response({'error': 'You do not have permission to modify or delete this comment.'},
+                            status=status.HTTP_403_FORBIDDEN)
+        return None
 
     @swagger_auto_schema(
-        operation_description="Get an comment by ID",
+        operation_description="Get a comment by ID",
         responses={200: CommentsSerializer()}
     )
     def get(self, request, pk):
@@ -154,12 +251,20 @@ class CommentsDetailAPIView(generics.GenericAPIView,
         responses={200: CommentsSerializer()}
     )
     def put(self, request, pk):
+        comment = get_object_or_404(Comments, id=pk)
+        permission_check = self.check_user_permission(request, comment)
+        if permission_check:
+            return permission_check
         return self.update(request, pk=pk)
 
     @swagger_auto_schema(
         operation_description="Delete a comment"
     )
     def delete(self, request, pk):
+        comment = get_object_or_404(Comments, id=pk)
+        permission_check = self.check_user_permission(request, comment)
+        if permission_check:
+            return permission_check
         return self.destroy(request, pk=pk)
 
 
@@ -168,19 +273,57 @@ class CommentsUserAPIView(generics.GenericAPIView,
     serializer_class = CommentsSerializer
 
     def get_permissions(self):
-        return [IsAuthenticated()]
+        return [AllowAny()]
 
-    """"def get_queryset(self):
+    def get_queryset(self):
         user_id = self.kwargs.get('user_id')
-        if user_id:
-            return Comments.objects.filter(user_id=user_id)
-        return Comments.objects.filter(user=self.request.user)"""
+        return Comments.objects.filter(user_id=user_id)
 
     @swagger_auto_schema(
-        operation_description="Get all comments for a user by user_id in URL or current user if user_id is not provided",
+        operation_description="Get all comments for a user",
         responses={200: CommentsSerializer(many=True)}
     )
     def get(self, request, user_id=None):
+        return self.list(request)
+
+
+class CommentsByUserLoginAPIView(generics.GenericAPIView,
+                                 mixins.ListModelMixin):
+    serializer_class = CommentsSerializer
+
+    def get_permissions(self):
+        return [AllowAny()]
+
+    def get_queryset(self):
+        username = self.kwargs.get('username')
+        return Comments.objects.filter(user__username=username)
+
+    @swagger_auto_schema(
+        operation_description="Get all comments for a specific user by username",
+        responses={200: CommentsSerializer(many=True)}
+    )
+    def get(self, request, username=None):
+        return self.list(request)
+
+
+class CommentsByUserLoginForAnnouncementsAPIView(generics.GenericAPIView,
+                                                 mixins.ListModelMixin):
+    serializer_class = CommentsSerializer
+
+    def get_permissions(self):
+        return [AllowAny()]
+
+    def get_queryset(self):
+        username = self.kwargs.get('username')
+        limit = self.request.query_params.get('limit', 3)
+        limit = int(limit)
+        return Comments.objects.filter(announcement__user__username=username)[:limit]
+
+    @swagger_auto_schema(
+        operation_description="Get the last N comments for announcements created by a specific user by username",
+        responses={200: CommentsSerializer(many=True)}
+    )
+    def get(self, request, username=None):
         return self.list(request)
 
 
@@ -191,7 +334,7 @@ class CommentsAnnouncementAPIView(generics.GenericAPIView,
     def get_permissions(self):
         method = self.request.method
         if method == 'GET':
-            return [IsAuthenticated()]
+            return [AllowAny()]
 
     def get_queryset(self):
         announcement_id = self.kwargs.get('announcement_id')
