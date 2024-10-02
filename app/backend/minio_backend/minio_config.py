@@ -27,28 +27,64 @@ def upload_image(file, upload_to, bucket_name=settings.MINIO_MEDIA_FILES_BUCKET)
             create_bucket(bucket_name)
 
         file_data = file.read()
-        file_name = file.name
         file_size = len(file_data)
         file_stream = io.BytesIO(file_data)
-        minio_client.put_object(bucket_name, upload_to + file_name, file_stream, file_size)
-        return file_name
+
+        minio_client.put_object(bucket_name, upload_to, file_stream, file_size)
+
+        return upload_to
     except S3Error as err:
         print(f"Error occurred: {err}")
         return None
 
 
-def get_image_url(file_name, upload_from, bucket_name=settings.MINIO_MEDIA_FILES_BUCKET):
+def get_image_url(file_path, bucket_name=settings.MINIO_MEDIA_FILES_BUCKET):
     try:
-        url = minio_client.presigned_get_object(bucket_name, upload_from + file_name)
+        url = minio_client.presigned_get_object(bucket_name, file_path)
         return url
     except S3Error as err:
         print(f"Error occurred: {err}")
         return None
 
 
-def delete_image(file_name, upload_from, bucket_name=settings.MINIO_MEDIA_FILES_BUCKET):
+def delete_image(file_name, bucket_name=settings.MINIO_MEDIA_FILES_BUCKET):
     try:
-        minio_client.remove_object(bucket_name, upload_from + file_name)
+        minio_client.remove_object(bucket_name, file_name)
+        return True
+    except S3Error as err:
+        print(f"Error occurred: {err}")
+        return False
+
+
+def upload_cardimage_image(file, upload_to, bucket_name=settings.MINIO_MEDIA_FILES_BUCKET):
+    try:
+        if not minio_client.bucket_exists(bucket_name):
+            create_bucket(bucket_name)
+
+        file_data = file.read()
+        file_size = len(file_data)
+        file_stream = io.BytesIO(file_data)
+
+        minio_client.put_object(bucket_name, upload_to, file_stream, file_size)
+
+        return upload_to
+    except S3Error as err:
+        print(f"Error occurred: {err}")
+        return None
+
+
+def get_cardimage_url(file_path, bucket_name=settings.MINIO_MEDIA_FILES_BUCKET):
+    try:
+        url = minio_client.presigned_get_object(bucket_name, file_path)
+        return url
+    except S3Error as err:
+        print(f"Error occurred: {err}")
+        return None
+
+
+def delete_cardimage_image(file_name, bucket_name=settings.MINIO_MEDIA_FILES_BUCKET):
+    try:
+        minio_client.remove_object(bucket_name, file_name)
         return True
     except S3Error as err:
         print(f"Error occurred: {err}")
