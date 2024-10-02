@@ -6,13 +6,15 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from minio_backend.minio_config import upload_image, get_image_url, delete_image
-from minio_backend.models import UserProfile#, GamePicture
-from minio_backend.selializers import UserProfileSerializer#, GamePictureSerializer
+from authorization.permissions import IsNotBlocked
+from minio_backend.minio_config import upload_image, get_image_url, delete_image, delete_cardimage_image, \
+    upload_cardimage_image, get_cardimage_url
+from minio_backend.models import UserProfile, CardImage
+from minio_backend.serializers import UserProfileSerializer, CardImageSerializer
 
 
 class UserProfileView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsNotBlocked]
     parser_classes = (FormParser, MultiPartParser)
 
     @swagger_auto_schema(
@@ -22,7 +24,7 @@ class UserProfileView(APIView):
     def get(self, request):
         profile = get_object_or_404(UserProfile, user=request.user)
         if profile.avatar:
-            avatar_url = get_image_url(profile.avatar.name, profile.upload_path)
+            avatar_url = get_image_url(profile.avatar.name)
             profile_picture_link = {
                 'link': avatar_url
             }
@@ -45,13 +47,29 @@ class UserProfileView(APIView):
         avatar = request.FILES.get('avatar')
 
         if avatar:
-            file_name = upload_image(avatar, profile.upload_path)
-            if file_name:
-                profile.avatar.name = file_name
+            user_id = profile.user.id
+            base_file_name = f'profiles/user_{user_id}'
+
+            extensions = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff', 'webp', 'svg', 'ico']
+            for ext in extensions:
+                file_to_delete = f'{base_file_name}.{ext}'
+                delete_image(file_to_delete)
+
+            file_extension = avatar.name.split('.')[-1]
+            new_file_name = f'{base_file_name}.{file_extension}'
+
+            new_file_name = upload_image(avatar, new_file_name)
+            if new_file_name:
+                profile.avatar.name = new_file_name
                 profile.save()
 
-        serializer = UserProfileSerializer(profile).data
-        return Response(serializer, status=status.HTTP_201_CREATED)
+        avatar_url = get_image_url(profile.avatar.name)
+
+        response_data = {
+            'avatar': avatar_url
+        }
+
+        return Response(response_data, status=status.HTTP_201_CREATED)
 
     @swagger_auto_schema(
         operation_description="Delete user profile avatar",
@@ -59,64 +77,92 @@ class UserProfileView(APIView):
     )
     def delete(self, request):
         profile = get_object_or_404(UserProfile, user=request.user)
+
         if profile.avatar:
-            delete_image(profile.avatar.name, profile.upload_path)
-            profile.delete()
+            delete_image(
+                profile.avatar.name)
+
+            profile.avatar = None
+            profile.save()
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# class GamePictureView(APIView):
-#     permission_classes = [IsAdminUser]
-#     parser_classes = (FormParser, MultiPartParser)
-#
-#     def get_permissions(self):
-#         method = self.request.method
-#         if method == 'POST' or method == 'DELETE':
-#             return [IsAdminUser()]
-#         else:
-#             return [IsAuthenticated()]
-#
-#     @swagger_auto_schema(
-#         operation_description="Get game pictures",
-#         responses={200: GamePictureSerializer(many=True)}
-#     )
-#     def get(self, request, pk):
-#         game_pictures = GamePicture.objects.filter(game__id=pk)
-#         links = []
-#         if game_pictures is not None and len(game_pictures) != 0:
-#             for picture in game_pictures:
-#                 link = get_image_url(picture.picture.name, picture.upload_path)
-#                 links.append(link)
-#         return Response(links, status=status.HTTP_200_OK)
-#
-#     @swagger_auto_schema(
-#         operation_description="Upload or update game picture",
-#         request_body=GamePictureSerializer,
-#         responses={
-#             201: GamePictureSerializer(),
-#             400: "Invalid data provided"
-#         }
-#     )
-#     def post(self, request, pk):
-#         game_picture = GamePicture.objects.create(game_id=pk)
-#         new_picture = request.FILES.get('picture')
-#
-#         if new_picture:
-#             file_name = upload_image(new_picture, game_picture.upload_path)
-#             if file_name:
-#                 game_picture.picture.name = file_name
-#                 game_picture.save()
-#
-#         serializer = GamePictureSerializer(game_picture).data
-#         return Response(serializer, status=status.HTTP_201_CREATED)
-#
-#     @swagger_auto_schema(
-#         operation_description="Delete game picture by its id",
-#         responses={204: "Avatar deleted successfully"}
-#     )
-#     def delete(self, request, pk):
-#         game_picture = GamePicture.objects.get(id=pk)
-#         if game_picture.picture:
-#             delete_image(game_picture.picture.name, game_picture.upload_path)
-#             game_picture.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
+class CardImageListCreateView(APIView):
+    permission_classes = [IsAuthenticated, IsNotBlocked]
+    parser_classes = (FormParser, MultiPartParser)
+
+    extensions = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff', 'webp', 'svg', 'ico']
+
+    @swagger_auto_schema(
+        operation_description="Get cards pictures",
+        responses={200: CardImageSerializer(many=True)}
+    )
+    def get(self, request, card_id):
+        game_pictures = CardImage.objects.filter(card__id=card_id)
+        links = []
+
+        if game_pictures.exists():
+            for picture in game_pictures:
+                file_path = picture.picture.name
+                link = get_cardimage_url(file_path)
+
+                if link:
+                    links.append(link)
+
+        return Response(links, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_description="Upload or update card picture",
+        request_body=CardImageSerializer,
+        responses={
+            201: CardImageSerializer(),
+            400: "Invalid data provided"
+        }
+    )
+    def post(self, request, card_id):
+        new_picture = request.FILES.get('picture')
+
+        if new_picture:
+            file_extension = new_picture.name.split('.')[-1].lower()
+            if file_extension not in self.extensions:
+                return Response({"error": "Unsupported file extension."}, status=status.HTTP_400_BAD_REQUEST)
+
+            game_picture = CardImage.objects.create(card_id=card_id)
+
+            image_id = game_picture.id
+            folder_path = f'pictures/card_{card_id}/'
+            file_name = f'{folder_path}cardImage_{image_id}.{file_extension}'
+
+            upload_cardimage_image(new_picture, file_name)
+            if file_name:
+                game_picture.picture.name = file_name
+                game_picture.save()
+
+            serializer = CardImageSerializer(game_picture).data
+            return Response(serializer, status=status.HTTP_201_CREATED)
+
+        return Response({"error": "No picture uploaded."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CardImageDeleteView(APIView):
+    permission_classes = [IsAuthenticated, IsNotBlocked]
+
+    extensions = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff', 'webp', 'svg', 'ico']
+
+    @swagger_auto_schema(
+        operation_description="Delete cards picture by its id",
+        responses={204: "Picture deleted successfully"}
+    )
+    def delete(self, request, card_id, image_id):
+        game_picture = get_object_or_404(CardImage, id=image_id, card__id=card_id)
+        if game_picture.picture:
+            base_file_name = game_picture.picture.name.rsplit('.', 1)[0]
+
+            for ext in self.extensions:
+                file_to_delete = f'{base_file_name}.{ext}'
+                delete_cardimage_image(file_to_delete)
+
+            game_picture.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
