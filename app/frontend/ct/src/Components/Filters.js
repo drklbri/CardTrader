@@ -31,7 +31,7 @@ const Filters = ({ applyFilters, onToggle }) => {
 
     useEffect(() => {
         const fetchTags = async () => {
-            const response = await fetch('/announcements');
+            const response = await fetch('https://card-trader.online/api/announcements');
             const data = await response.json();
             const allTags = [...new Set(data.map(announcement => announcement.tags).flat())];
             setTags(allTags);
@@ -73,7 +73,7 @@ const Filters = ({ applyFilters, onToggle }) => {
     };
 
     const handleApplyFilters = () => {
-        applyFilters({ searchText, condition: selectedCondition, rarity: selectedRarity, tags: selectedTags });
+        applyFilters({ condition: selectedCondition, rarity: selectedRarity, tags: selectedTags });
     };
 
     const toggleMenu = () => {
@@ -95,9 +95,9 @@ const Filters = ({ applyFilters, onToggle }) => {
                         <div className="condition-options">
                             {CONDITION.map((option) => (
                                 <button
-                                    key={option.label}
-                                    className={`condition-button ${selectedCondition === option.label ? 'active' : ''}`}
-                                    onClick={() => handleConditionChange(option.label)}
+                                    key={option.value}
+                                    className={`condition-button ${selectedCondition === option.value ? 'active' : ''}`}
+                                    onClick={() => handleConditionChange(option.value)}
                                 >
                                     {option.label}
                                 </button>
@@ -111,9 +111,9 @@ const Filters = ({ applyFilters, onToggle }) => {
                         <div className="rarity-options">
                             {RARITY.map((option) => (
                                 <button
-                                    key={option.label}
-                                    className={`rarity-button ${selectedRarity === option.label ? 'active' : ''}`}
-                                    onClick={() => handleRarityChange(option.label)}
+                                    key={option.value}
+                                    className={`rarity-button ${selectedRarity === option.value ? 'active' : ''}`}
+                                    onClick={() => handleRarityChange(option.value)}
                                 >
                                     {option.label}
                                 </button>

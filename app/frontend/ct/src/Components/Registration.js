@@ -16,7 +16,7 @@ function RegistrationForm() {
 
         try {
             // Запрос на регистрацию пользователя
-            const response = await axios.post('https://card-trader.online/auth/register', {
+            const response = await axios.post('https://card-trader.online/api/auth/register', {
                 email: email,
                 username: username,
                 password: password
@@ -70,7 +70,7 @@ function RegistrationForm() {
     // Функция отправки email для подтверждения
     const sendConfirmationEmail = async () => {
         try {
-            const emailResponse = await axios.post('https://card-trader.online/auth/email/send', {
+            const emailResponse = await axios.post('https://card-trader.online/api/auth/email/send', {
                 email: email // Используем email, введенный пользователем
             }, {
                 headers: {

@@ -50,6 +50,8 @@
     margin: 5px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.3s;
+    width: 100%;
+    box-sizing: border-box
 }
 
 .condition-button:hover,

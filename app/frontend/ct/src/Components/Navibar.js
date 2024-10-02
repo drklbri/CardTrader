@@ -13,7 +13,7 @@ const Navibar = () => {
 
     const fetchAvatar = async () => {
         try {
-            const response = await axios.get('https://card-trader.online/profile/', {
+            const response = await axios.get('https://card-trader.online/api/profile/', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('access_token')}`, // Авторизация через токен
                 },
@@ -32,16 +32,18 @@ const Navibar = () => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            fetchAvatar(); // Запрос аватара только если пользователь авторизован
+            fetchAvatar();
 
-            // Устанавливаем интервал для периодической проверки
             const intervalId = setInterval(() => {
                 fetchAvatar();
-            }, 2000); // Проверяем каждые 2 секунды
+            }, 2000);
 
-            return () => clearInterval(intervalId); // Очищаем интервал при размонтировании
+            return () => clearInterval(intervalId);
         }
     }, [isAuthenticated]);
+
+
+
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -60,7 +62,7 @@ const Navibar = () => {
 
     const handleLogout = () => {
         logout(); // Вызываем функцию logout из контекста
-        handleNavigation('/auth'); // Перенаправляем на страницу авторизации
+        handleNavigation('/'); // Перенаправляем на страницу авторизации
     };
 
     const handleSearch = (e) => {

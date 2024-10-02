@@ -9,6 +9,7 @@ const CreateAnnouncement = () => {
     const [selectedRarity, setSelectedRarity] = useState('common'); // Редкость
     const [selectedImage, setSelectedImage] = useState(null);
     const [successMessage, setSuccessMessage] = useState(''); // State for success message
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleAddCard = () => {
         setCards([...cards, { id: cards.length + 1, tags: [], images: [] }]);
@@ -64,15 +65,26 @@ const CreateAnnouncement = () => {
         ));
     };
 
-    const handleAnnouncementChange = (e) => {
-        setAnnouncementData({ ...announcementData, [e.target.name]: e.target.value });
+    const handleAnnouncementChange = (event) => {
+        const { name, value } = event.target;
+
+        // Регулярное выражение для проверки символов
+        const regex = /^[a-zA-Zа-яА-Я0-9\s.,!?;:()-]*$/; // Добавьте нужные символы, если нужно
+
+        if (regex.test(value) || value === "") { // Проверяем, чтобы поле не было пустым
+            setAnnouncementData((prevData) => ({
+                ...prevData,
+                [name]: value,
+            }));
+        }
     };
 
     // Функция для отправки объявления на сервер
     const handleSubmit = async () => {
+        setIsSubmitting(true);
         try {
             // Сначала отправляем запрос для создания объявления
-            const response = await fetch('/announcements', {
+            const response = await fetch('https://card-trader.online/api/announcements', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -99,7 +111,7 @@ const CreateAnnouncement = () => {
 
             // Отправляем запросы на создание карт для каждой вкладки
             for (const card of cards) {
-                const cardResponse = await fetch('/cards', {
+                const cardResponse = await fetch('https://card-trader.online/api/cards', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -129,7 +141,14 @@ const CreateAnnouncement = () => {
             setAnnouncementData({ name: '', description: '', contactInfo: '' }); // Очищаем данные формы
             setCards([{ id: 1, tags: [], images: [] }]); // Очищаем карты
 
+            setTimeout(() => {
+                setIsSubmitting(false); // Разблокируем кнопку через 5 секунд
+            }, 5000);
+
+
         } catch (error) {
+            setIsSubmitting(false)
+            setSuccessMessage("Ошибка при отправке")
             console.error(error);
         }
     };
@@ -139,7 +158,7 @@ const CreateAnnouncement = () => {
             for (const image of images) {
                 const formData = new FormData();
                 formData.append('picture', image); // Append the file directly
-                const response = await fetch(`/cards/${cardId}/pictures/`, {
+                const response = await fetch(`https://card-trader.online/api/cards/${cardId}/pictures/`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('access_token')}`
@@ -157,7 +176,7 @@ const CreateAnnouncement = () => {
     // Функция для получения последнего объявления
     const fetchLatestAnnouncement = async () => {
         try {
-            const response = await fetch('/announcements/latest/?limit=1');
+            const response = await fetch('https://card-trader.online/api/announcements/latest/?limit=1');
 
             const data = await response.json();
             console.log("Последнее объявление:", data);
@@ -331,7 +350,13 @@ const CreateAnnouncement = () => {
             </div>
 
             {currentTab === cards.length && (
-                <button className="create-button" onClick={handleSubmit}>Создать объявление</button>
+                <button
+                    onClick={handleSubmit}
+                    className="create-button"
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? 'Отправка...' : 'Создать объявление'}
+                </button>
             )}
 
             {/* Success Message */}
