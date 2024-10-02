@@ -4,7 +4,8 @@ import axios from 'axios';
 import Avatar from '../Components/Avatar'; // Import the Avatar component
 import './AnnouncementPage.css';
 import { AuthContext } from "../Components/AuthContext";
-
+import YandexMetrika from "../Components/YandexMetrika";
+/* global ym */
 const AnnouncementPage = () => {
     const { id } = useParams(); // Get the announcement id from the URL
     const [announcement, setAnnouncement] = useState(null);
@@ -248,6 +249,7 @@ const AnnouncementPage = () => {
 
     return (
         <div className="announcement-page-container">
+            <YandexMetrika />
             <div className="image-gallery">
                 <div className="image-preview">
                     <img src={selectedImage} alt="Selected card" className="selected-image" />

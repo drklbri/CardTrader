@@ -4,8 +4,9 @@ import Preview from '../Components/Preview';
 import { Link } from 'react-router-dom';
 import "./DeletePage.css";
 import { AuthContext } from "../Components/AuthContext";
-import Filters from '../Components/Filters'; // Import Filters from MainPage
-
+import Filters from '../Components/Filters';
+import YandexMetrika from "../Components/YandexMetrika"; // Import Filters from MainPage
+/* global ym */
 const DeletePage = () => {
     const [announcements, setAnnouncements] = useState([]);
     const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
@@ -17,6 +18,7 @@ const DeletePage = () => {
     const { currentUser } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
     const [isLoadingUser, setIsLoadingUser] = useState(true); // To track loading of currentUser
+
 
     useEffect(() => {
         const fetchAnnouncements = async () => {
@@ -111,6 +113,7 @@ const DeletePage = () => {
 
     return (
         <div>
+            <YandexMetrika />
             {currentUser.role === "admin" ? (
                 <>
                     <Filters applyFilters={applyFilters} onToggle={handleFilterToggle} />

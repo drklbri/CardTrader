@@ -4,6 +4,7 @@ import ProfileActions from '../Components/ProfileAction';
 import Preview from '../Components/Preview'; // Импорт компонента Preview
 import axios from 'axios';
 import './Cabinet.css'; // Импорт стилей
+/* global ym */
 
 const Cabinet = () => {
     const [imageUrl, setImageUrl] = useState('');
@@ -12,6 +13,34 @@ const Cabinet = () => {
     const [announcements, setAnnouncements] = useState([]); // Все объявления
     const [visibleAnnouncements, setVisibleAnnouncements] = useState([]); // Видимые объявления
     const [visibleCount, setVisibleCount] = useState(8); // Количество отображаемых объявлений
+
+    const YandexMetrika = () => {
+        useEffect(() => {
+            // Инициализация Яндекс.Метрики
+            (function (m, e, t, r, i, k, a) {
+                m[i] = m[i] || function () {
+                    (m[i].a = m[i].a || []).push(arguments)
+                };
+                m[i].l = 1 * new Date();
+                for (var j = 0; j < document.scripts.length; j++) {
+                    if (document.scripts[j].src === r) {
+                        return;
+                    }
+                }
+                k = e.createElement(t);
+                a = e.getElementsByTagName(t)[0];
+                k.async = 1;
+                k.src = r;
+                a.parentNode.insertBefore(k, a);
+            })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+            ym(98526521, "init", {
+                clickmap: true,
+                trackLinks: true,
+                accurateTrackBounce: true,
+            });
+        }, []);
+    }
 
     // Эффект для загрузки данных объявлений при заходе на страницу
     useEffect(() => {

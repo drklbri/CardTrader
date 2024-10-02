@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
+import YandexMetrika from "../Components/YandexMetrika";
+/* global ym */
 
 const AnnouncementForm = ({ announcementInfo, onAnnouncementChange, cards, onCreate }) => {
     const handleInputChange = (e) => {
@@ -8,6 +10,7 @@ const AnnouncementForm = ({ announcementInfo, onAnnouncementChange, cards, onCre
 
     return (
         <div className="announcement-form">
+            <YandexMetrika />
             <div className="gallery">
                 {cards.map((card, index) => (
                     <img key={index} src={card.image || 'https://via.placeholder.com/100'} alt={`Card ${index + 1}`} />

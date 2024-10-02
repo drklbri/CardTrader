@@ -4,7 +4,8 @@ import axios from 'axios';
 import Preview from '../Components/Preview';
 import "./SearchResultPage.css";
 import { Link } from 'react-router-dom';
-
+import YandexMetrika from "../Components/YandexMetrika";
+/* global ym */
 const SearchResultsPage = () => {
     const [announcements, setAnnouncements] = useState([]);
     const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
@@ -13,6 +14,7 @@ const SearchResultsPage = () => {
 
     const queryParams = new URLSearchParams(location.search);
     const searchQuery = queryParams.get('q') || ''; // Извлекаем поисковый запрос из URL
+
 
     useEffect(() => {
         const fetchAnnouncements = async () => {
@@ -42,6 +44,7 @@ const SearchResultsPage = () => {
 
     return (
         <div>
+            <YandexMetrika />
             <h1 className="search-result-query-title">
                 Результаты поиска для: "{searchQuery}"
             </h1>

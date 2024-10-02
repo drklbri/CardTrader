@@ -4,7 +4,8 @@ import axios from 'axios';
 import Preview from '../Components/Preview';
 import './MainPage.css';
 import { Link } from 'react-router-dom';
-
+import YandexMetrika from "../Components/YandexMetrika";
+/* global ym */
 const MainPage = () => {
     const [announcements, setAnnouncements] = useState([]);
     const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
@@ -14,6 +15,7 @@ const MainPage = () => {
     const [filters, setFilters] = useState({});
     const [hasMoreAnnouncements, setHasMoreAnnouncements] = useState(true); // To track if more announcements are available
     const [isLoading, setIsLoading] = useState(true); // State to track loading status
+
 
     // Function to load announcements from the server
     const fetchPaginatedAnnouncements = async (page, appliedFilters = {}) => {
@@ -125,6 +127,7 @@ const MainPage = () => {
 
     return (
         <div>
+            <YandexMetrika />
             <Filters applyFilters={applyFilters} onToggle={handleFilterToggle} />
 
             {currentPage > 1 && (

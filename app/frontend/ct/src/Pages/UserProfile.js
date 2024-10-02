@@ -8,6 +8,9 @@ import { Link, useParams } from "react-router-dom";
 import { AuthContext } from '../Components/AuthContext'; // Импортируем AuthContext
 import "./UserProfile.css";
 import CommentsContainer from "../Components/CommentsContainer";
+import YandexMetrika from "../Components/YandexMetrika";
+/* global ym */
+
 
 const UserProfile = () => {
     const { isAuthenticated, currentUser, isLoading } = useContext(AuthContext); // Получаем состояние аутентификации
@@ -173,6 +176,7 @@ const UserProfile = () => {
     return (
 
         <div className="cabinet-container">
+            <YandexMetrika />
             <div className="left-column">
                 <Avatar
                     login={login}
