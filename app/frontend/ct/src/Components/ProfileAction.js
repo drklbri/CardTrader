@@ -2,28 +2,28 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './ProfileAction.css';
 
-const ProfileActions = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false); // Состояние для отображения модального окна
+const ProfileActions = ({ onAvatarUpdate }) => {
 
-    // Обработчик загрузки файла
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const handleFileChange = async (event) => {
-        const file = event.target.files[0]; // Получаем выбранный файл
-        if (!file) return; // Если файл не выбран, выходим
+        const file = event.target.files[0];
+        if (!file) return;
 
-        const formData = new FormData(); // Создаём объект FormData для отправки файла
-        formData.append('avatar', file); // Добавляем файл в форму данных
+        const formData = new FormData();
+        formData.append('avatar', file);
 
         try {
-            console.log(formData)
-            const response = await axios.post('https://card-trader.online/profile/', formData, {
+            const response = await axios.post('https://card-trader.online/api/profile/', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${localStorage.getItem('access_token')}`, // Токен для авторизации
+                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
                 },
             });
 
-            if (response.status === 200) {
+            if (response.status === 200 && response.data.avatarUrl) {
                 console.log('Аватар успешно обновлён');
+                onAvatarUpdate(response.data.avatarUrl); // Передаем новый URL аватара
             } else {
                 console.error('Ошибка при обновлении аватара:', response);
             }
@@ -32,28 +32,26 @@ const ProfileActions = () => {
         }
     };
 
-    // Открытие модального окна для подтверждения удаления аватара
     const openModal = () => {
         setIsModalOpen(true);
     };
 
-    // Закрытие модального окна
     const closeModal = () => {
         setIsModalOpen(false);
     };
 
-    // Обработчик удаления аватара после подтверждения
     const handleDeleteAvatar = async () => {
         try {
-            const response = await axios.delete('https://card-trader.online/profile/', {
+            const response = await axios.delete('https://card-trader.online/api/profile/', {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem('access_token')}`, // Токен для авторизации
+                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
                 },
             });
 
             if (response.status === 204) {
                 console.log('Аватар успешно удалён');
-                closeModal(); // Закрываем модальное окно после удаления
+                onAvatarUpdate(''); // Очищаем аватар после удаления
+                closeModal();
             } else {
                 console.error('Ошибка при удалении аватара:', response);
             }
@@ -64,7 +62,6 @@ const ProfileActions = () => {
 
     return (
         <div className="profile-actions-container">
-            {/* Элемент input для загрузки аватара */}
             <input
                 type="file"
                 id="avatar-upload"
@@ -78,12 +75,11 @@ const ProfileActions = () => {
                 Удалить аватар
             </button>
 
-            {/* Модальное окно для подтверждения удаления */}
             {isModalOpen && (
                 <div className="modal-overlay">
                     <div className="modal-content">
                         <button className="close-button" onClick={closeModal}>
-                            &times; {/* Иконка крестика */}
+                            &times;
                         </button>
                         <h2>Удалить аватар</h2>
                         <p>Вы уверены, что хотите удалить аватар?</p>

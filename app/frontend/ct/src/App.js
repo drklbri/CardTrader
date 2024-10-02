@@ -18,6 +18,7 @@ import SearchResultPage from "./Pages/SearchResultPage"
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('access_token'));
     const [currentUser, setCurrentUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const login = (accessToken, refreshToken) => {
         localStorage.setItem('access_token', accessToken);
@@ -33,22 +34,30 @@ function App() {
 
     useEffect(() => {
         const fetchCurrentUser = async () => {
+            setIsLoading(true); // Устанавливаем состояние загрузки в true
             if (isAuthenticated) {
                 const accessToken = localStorage.getItem('access_token');
-                const response = await axios.get('https://card-trader.online/auth/user', {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                });
-                setCurrentUser(response.data);
+                try {
+                    const response = await axios.get('https://card-trader.online/api/auth/user', {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    });
+                    setCurrentUser(response.data);
+                } catch (error) {
+                    console.error("Ошибка при получении текущего пользователя:", error);
+                    setCurrentUser(null);
+                }
             }
+            setIsLoading(false); // Устанавливаем состояние загрузки в false после завершения
         };
 
         fetchCurrentUser();
     }, [isAuthenticated]);
 
+
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout, currentUser }}>
+        <AuthContext.Provider value={{ isAuthenticated, login, logout, currentUser, isLoading }}>
             <div className="app-container">
                 <BrowserRouter>
                     <Navibar />

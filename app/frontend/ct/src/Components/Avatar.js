@@ -11,7 +11,7 @@ const Avatar = ({ login }) => {
     // Функция для получения аватара и количества отзывов
     const fetchUserDetails = async (username) => {
         try {
-            const response = await axios.get(`https://card-trader.online/auth/user/login/${username}`);
+            const response = await axios.get(`https://card-trader.online/api/auth/user/login/${username}`);
 
             if (response.data) {
                 setImageUrl(response.data.avatar_url); // Устанавливаем URL аватара

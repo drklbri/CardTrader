@@ -14,8 +14,8 @@
     padding: 20px; /* Отступы */
     border-radius: 10px; /* Закругленные углы */
     text-align: center; /* Центрирование текста */
-    margin: 20px; /* Отступ сверху и снизу */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Легкая тень */
+    margin-top: 25vh;
 }
 
 .remove-announcement-button {
