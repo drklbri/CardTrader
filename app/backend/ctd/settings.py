@@ -3,7 +3,7 @@ import datetime
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Загрузка переменных окружения из файла .env
+# Loading environment variables from the .env file
 BASE_DIR = Path(__file__).resolve().parent.parent
 dotenv_path = os.path.join(BASE_DIR, '.env')
 load_dotenv(dotenv_path)
@@ -31,20 +31,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
+    'django_filters',
     "authorization.apps.AuthorizationConfig",
-   # "game_catalog.apps.GameCatalogConfig",
-   # "order.apps.OrderConfig",
-   # "payment.apps.PaymentConfig",
-   # "review.apps.RewiewConfig",
-   # "shopping_cart.apps.ShoppingCartConfig",
-   # "game_storage.apps.GameStorageConfig",
-   # "discount.apps.DiscountConfig",
+    "announcements.apps.AnnouncementsConfig",
+    "cards.apps.CardsConfig",
     'drf_yasg',
+    'channels',
     "rest_framework_simplejwt.token_blacklist",
     'rest_framework',
     "minio_backend.apps.MinioBackendConfig",
-   # "telegram_bot.apps.TelegramBotConfig",
-   # "telegram_django_bot"
 ]
 
 MIDDLEWARE = [
@@ -62,7 +57,7 @@ ROOT_URLCONF = 'ctd.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,8 +73,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ctd.wsgi.application'
 
 # Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -92,8 +85,6 @@ DATABASES = {
 }
 
 # Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -128,30 +119,23 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         'rest_framework.permissions.IsAuthenticated'
     ],
-
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
 }
 
 # Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
+# Static files
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'authorization.User'
@@ -164,26 +148,11 @@ SIMPLE_JWT = {
     "UPDATE_LAST_LOGIN": True,
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
-    "VERIFYING_KEY": None,
-    "AUDIENCE": None,
-    "ISSUER": None,
-    "JWK_URL": None,
-    "LEEWAY": 0,
     "AUTH_HEADER_TYPES": ("Bearer", ""),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
-    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
     "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
-    "TOKEN_REFRESH_SERIALIZER": "authorization.serializers.JWTRefreshSerializer",
-    "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
-    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-    "TOKEN_TYPE_CLAIM": "token_type",
-    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
-    "JTI_CLAIM": "jti",
-    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
-    "SLIDING_TOKEN_LIFETIME": datetime.timedelta(minutes=30),
-    "SLIDING_TOKEN_REFRESH_LIFETIME": datetime.timedelta(days=30),
 }
 
 AUTHENTICATION_BACKENDS = [
@@ -192,18 +161,34 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_PORT = os.getenv('EMAIL_PORT')
-
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-
-EMAIL_SERVER = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-EMAIL_ADMIN = EMAIL_HOST_USER
 
+# CORS Settings
+CORS_ALLOWED_ORIGINS = [
+    'https://card-trader.online',
+    'https://www.card-trader.online',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://card-trader.online',
+    'https://www.card-trader.online',
+]
+
+# SSL and security settings
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# MinIO settings
 MINIO_EXTERNAL_ENDPOINT = os.getenv('MINIO_EXTERNAL_ENDPOINT')
 MINIO_EXTERNAL_ENDPOINT_USE_HTTPS = os.getenv('MINIO_EXTERNAL_ENDPOINT_USE_HTTPS', 'False') == 'True'
 MINIO_ENDPOINT = os.getenv('MINIO_ENDPOINT')
