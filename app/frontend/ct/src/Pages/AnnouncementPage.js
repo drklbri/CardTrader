@@ -272,7 +272,7 @@ const AnnouncementPage = () => {
                 <div className="announcement-info-container">
                     {isEditing ? (
                         <>
-                            <label>
+                            <label style={{display: 'block', marginBottom: '10px'}}>
                                 Название:
                                 <input
                                     type="text"
@@ -281,9 +281,19 @@ const AnnouncementPage = () => {
                                         ...editedAnnouncement,
                                         name: e.target.value
                                     })}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        margin: '5px 0',
+                                        backgroundColor: '#333',
+                                        border: '1px solid #444',
+                                        color: '#fff',
+                                        borderRadius: '5px',
+                                        fontSize: '16px',
+                                    }}
                                 />
                             </label>
-                            <label>
+                            <label style={{display: 'block', marginBottom: '10px'}}>
                                 Описание:
                                 <textarea
                                     value={editedAnnouncement.description}
@@ -291,9 +301,20 @@ const AnnouncementPage = () => {
                                         ...editedAnnouncement,
                                         description: e.target.value
                                     })}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        margin: '5px 0',
+                                        height: '100px',
+                                        backgroundColor: '#333',
+                                        border: '1px solid #444',
+                                        color: '#fff',
+                                        borderRadius: '5px',
+                                        fontSize: '16px',
+                                    }}
                                 />
                             </label>
-                            <label>
+                            <label style={{display: 'block', marginBottom: '10px'}}>
                                 Контакты:
                                 <input
                                     type="text"
@@ -302,8 +323,19 @@ const AnnouncementPage = () => {
                                         ...editedAnnouncement,
                                         contact_info: e.target.value
                                     })}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        margin: '5px 0',
+                                        backgroundColor: '#333',
+                                        border: '1px solid #444',
+                                        color: '#fff',
+                                        borderRadius: '5px',
+                                        fontSize: '16px',
+                                    }}
                                 />
                             </label>
+
                         </>
                     ) : (
                         <>
