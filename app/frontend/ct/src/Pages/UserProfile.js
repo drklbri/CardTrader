@@ -56,7 +56,7 @@ const UserProfile = () => {
                     setVisibleAnnouncements(announcementsResponse.data.slice(0, visibleCount));
 
                     const commentsResponse = await axios.get(`https://card-trader.online/api/comments/user/${login}/announcements/`);
-                    setComments(commentsResponse.data.slice(0, 3));
+                    setComments(commentsResponse.data);
                 } else {
                     setError('Пользователь не найден.');
                 }

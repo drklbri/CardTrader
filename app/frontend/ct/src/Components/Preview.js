@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Preview.css';
 
-const Preview = ({name, user, images, tags }) => {
+const Preview = ({ name, user, images, tags }) => {
     // Используем состояние для отслеживания текущей картинки
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -16,6 +16,10 @@ const Preview = ({name, user, images, tags }) => {
             prevIndex === 0 ? images.length - 1 : prevIndex - 1
         );
     };
+
+    // Отделяем тэг "Реклама" от остальных тэгов
+    const regularTags = tags.filter(tag => tag !== 'Реклама');
+    const adTag = tags.includes('Реклама') ? 'Реклама' : null;
 
     return (
         <div className="preview-container">
@@ -47,10 +51,17 @@ const Preview = ({name, user, images, tags }) => {
 
             {/* Тэги объявления */}
             <div className="preview-tags">
-                {tags.length > 0
-                    ? tags.map((tag, index) => <span key={index} className="preview-tag">{tag}</span>)
+                {regularTags.length > 0
+                    ? regularTags.map((tag, index) => <span key={index} className="preview-tag">{tag}</span>)
                     : <span className="preview-tag">No tags</span>}
             </div>
+
+            {/* Тэг "Реклама" отдельно */}
+            {adTag && (
+                <div className="ad-tag">
+                    {adTag}
+                </div>
+            )}
         </div>
     );
 };
