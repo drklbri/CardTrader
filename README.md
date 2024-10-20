@@ -14,16 +14,16 @@
 ## Сервисы
 - [Яндекс Метрика](https://metrika.yandex.ru/dashboard?id=98526521)<br />
 - [Miro](https://miro.com/app/board/uXjVNhIET0Q=/)<br>
-- [Jira]()<br>
+- [Jira](https://card-trader.atlassian.net/jira/core/projects/CAR/board)<br>
 
 
 ## Документация
-- [Техническое задание](https://github.com/drklbri/CardTrader/blob/develop/Documents/%D0%A2%D0%97.docx)<br />
-- [Сопроводительное письмо](https://github.com/drklbri/CardTrader/blob/develop/Documents/%D0%A1%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5%20%D0%BF%D0%B8%D1%81%D1%8C%D0%BC%D0%BE.docx)<br>
-- [Курсовая](https://github.com/drklbri/CardTrader/blob/develop/Documents/kurs.docx)<br>
+- [Техническое задание](https://github.com/drklbri/CardTrader/blob/develop/Documents/%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5%20%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5.pdf)<br />
+- [Сопроводительное письмо](https://github.com/drklbri/CardTrader/blob/develop/Documents/%D0%A1%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5%20%D0%BF%D0%B8%D1%81%D1%8C%D0%BC%D0%BE.pdf)<br>
+- [Курсовая](https://github.com/drklbri/CardTrader/blob/develop/Documents/%D0%9A%D1%83%D1%80%D1%81%D0%BE%D0%B2%D0%BE%D0%B9%20%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82.pdf)<br>
 
 ## Защита проекта
-- [Презентация](https://github.com/drklbri/CardTrader/blob/develop/Documents/prezentation.pdf)<br>
+- [Презентация](https://github.com/drklbri/CardTrader/blob/develop/Documents/%D0%9F%D1%80%D0%B5%D0%B7%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D1%8F.pdf)<br>
 - [Видеодемонстрация продукта]()
 
 
@@ -33,7 +33,7 @@
 - [Frontend](https://github.com/drklbri/CardTrader/tree/main/app/frontend)
 
 ## Веб-приложение
-### [Card-Trader.online](https://card-trader.online/)
+### [https://card-trader.online/](https://card-trader.online/)
 
 ### Данные для входа
 
