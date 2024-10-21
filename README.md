@@ -21,12 +21,12 @@ sicoge2641@chysir.com<br>
 Watcher_Pass!<br>
 
 ## Документация
-- [Техническое задание](https://github.com/drklbri/CardTrader/blob/develop/Documents/%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5%20%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5.pdf)<br />
-- [Сопроводительное письмо](https://github.com/drklbri/CardTrader/blob/develop/Documents/%D0%A1%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5%20%D0%BF%D0%B8%D1%81%D1%8C%D0%BC%D0%BE.pdf)<br>
-- [Курсовая](https://github.com/drklbri/CardTrader/blob/develop/Documents/%D0%9A%D1%83%D1%80%D1%81%D0%BE%D0%B2%D0%BE%D0%B9%20%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82.pdf)<br>
+- [Техническое задание](https://github.com/drklbri/CardTrader/blob/main/Documents/%D0%A2%D0%B5%D1%85%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5%20%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5.pdf)<br />
+- [Сопроводительное письмо](https://github.com/drklbri/CardTrader/blob/main/Documents/%D0%A1%D0%BE%D0%BF%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5%20%D0%BF%D0%B8%D1%81%D1%8C%D0%BC%D0%BE.pdf)<br>
+- [Курсовая](https://github.com/drklbri/CardTrader/blob/main/Documents/%D0%9A%D1%83%D1%80%D1%81%D0%BE%D0%B2%D0%BE%D0%B9%20%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82.pdf)<br>
 
 ## Защита проекта
-- [Презентация](https://github.com/drklbri/CardTrader/blob/develop/Documents/%D0%9F%D1%80%D0%B5%D0%B7%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D1%8F.pdf)<br>
+- [Презентация](https://github.com/drklbri/CardTrader/blob/main/Documents/%D0%9F%D1%80%D0%B5%D0%B7%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D1%8F.pdf)<br>
 - [Демонстрация работы приложения](https://disk.yandex.ru/i/NTKKAqqYfwRTrQ)<br>
 - [Видеопрезентация продукта](https://disk.yandex.ru/i/R3xpl1oObjvNjw)
 
