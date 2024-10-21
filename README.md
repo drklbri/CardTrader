@@ -15,6 +15,7 @@
 - [Яндекс Метрика](https://metrika.yandex.ru/dashboard?id=98526521)<br />
 - [Miro](https://miro.com/app/board/uXjVNhIET0Q=/)<br>
 - [Jira](https://card-trader.atlassian.net/jira/core/projects/CAR/board)<br>
+
 Данные для входа в Jira:<br>
 sicoge2641@chysir.com<br>
 Watcher_Pass!<br>
